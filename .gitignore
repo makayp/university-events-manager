@@ -32,3 +32,22 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# python
+.venv/
+*.pyc
+__pycache__/
+.pytest_cache/
+
+# Temp files
+*~
+
+# Bash files
+*.bat
+
+#postgres
+.env
+
+# db
+migrations/
+instance/
