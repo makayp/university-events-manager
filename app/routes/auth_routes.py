@@ -1,12 +1,11 @@
 from flask import Blueprint, request, jsonify
 from app import db
-from datetime import timedelta, datetime, timezone
 from app.models import User, BlacklistedToken
-from werkzeug.security import check_password_hash
-from flask_login import login_required
+from datetime import timedelta, datetime, timezone
+from functools import wraps
 import re, jwt, os
 
-auth_bp = Blueprint('auth', __name__)
+auth_bp = Blueprint('auth', __name__, url_prefix="/auth/")
 
 password_length = 8
 JWT_SECRET = os.getenv('JWT_SECRET')
@@ -58,6 +57,37 @@ def verify_jwt(token: str):
         return decoded_payload
     except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, Exception):
         return None
+    
+def authorize_request():
+    auth_header = request.headers.get('Authorization')
+    if not auth_header:
+        return None, None, jsonify({"success": False, "message": "Token is missing."}), 401
+
+    try:
+        token = auth_header.split(" ")[1]  # "Bearer <token>"
+    except IndexError:
+        return None, None, jsonify({"success": False, "message": "Malformed authorization header."}), 400
+
+    decoded_token = verify_jwt(token)
+    if not decoded_token:
+        return None, None, jsonify({"success": False, "message": "Invalid or expired JWT token."}), 401
+
+    user_id = decoded_token.get('user_id')
+    user = User.query.get(user_id)
+
+    if not user:
+        return None, None, jsonify({"success": False, "message": "User not found."}), 404
+
+    return user, token, None
+
+def jwt_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        user, error = authorize_request()
+        if error:
+            return error
+        return f(user, *args, **kwargs)
+    return decorated_function
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -135,31 +165,23 @@ def login():
 
     return jsonify({"success": True, "message": "Logged in successfully.", "token": token}), 200
 
-@auth_bp.route('/logout', methods=['POST'])
-def logout():
-    auth_header = request.headers.get('Authorization')
-    if not auth_header:
-        return jsonify({"success": False, "message": "Token is missing."}), 401
-
-    try:
-        token = auth_header.split(" ")[1]  # "Bearer <token>"
-    except IndexError:
-        return jsonify({"success": False, "message": "Malformed authorization header."}), 400
-
+@auth_bp.route('/auth/logout', methods=['POST'])
+@jwt_required
+def logout(user, token):
     decoded_token = verify_jwt(token)
-    if not decoded_token:
-        return jsonify({"success": False, "message": "Invalid or expired JWT token."}), 401
 
-    # Check if the token is already blacklisted
-    if BlacklistedToken.query.filter_by(token=token).first():
-        return jsonify({"success": False, "message": "Token is already blacklisted."}), 400
-
-    # Add the token to the blacklist with the expiry date
-    expiry_date = datetime.fromtimestamp(decoded_token['exp'], timezone.utc)
-    invalid_jwt = BlacklistedToken(token=token, expiry_date=expiry_date)
+    expiry_date = datetime.fromtimestamp(decoded_token.get("exp"), timezone.utc)
+    invalid_jwt = BlacklistedToken(token=hash, expiry_date=expiry_date)
     
-    # Save the blacklisted token to the database
     db.session.add(invalid_jwt)
     db.session.commit()
 
     return jsonify({"success": True, "message": "Logged out successfully."}), 200
+
+@auth_bp.route('/delete_account', methods=['DELETE'])
+@jwt_required
+def delete_account(user, token):
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({"success": True, "message": "User account deleted successfully."}), 200

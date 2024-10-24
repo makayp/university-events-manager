@@ -94,15 +94,15 @@ class BlacklistedToken(db.Model):
     __tablename__ = 'blacklisted_tokens'
 
     # We use the hashed JWT as the primary key since it's unique
-    token_hash = db.Column(db.String, primary_key=True, nullable=False)
+    token = db.Column(db.String, primary_key=True, nullable=False)
     expiry_date = db.Column(db.Time, nullable=False)
 
     def __init__(self, token, expiry):
-        self.token_hash = hashlib.sha256(token.en)
+        self.token = token
         self.expiry_date = expiry
 
     def __repr__(self):
-        return f'<BlacklistedToken(token_hash={self.token_hash}, expires={self.expiry_date})>'
+        return f'<BlacklistedToken(token_hash={self.token}, expires={self.expiry_date})>'
     
     def blacklist_token(token: str):
         hash

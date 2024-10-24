@@ -19,15 +19,15 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///prod.db'
-    SECRET_KEY = os.getenv("SECRET_KEY")
-    JWT_SECRET = os.getenv("JWT_SECRET")
-    if not SECRET_KEY:
-        print("SECRET_KEY not set")
-        exit()
 
-    if not JWT_SECRET:
-        print("JWT_SECRET not set.")
-        exit()
+    def __init__(self):
+        self.SECRET_KEY = os.getenv("SECRET_KEY")
+        self.JWT_SECRET = os.getenv("JWT_SECRET")
+        
+        if not self.SECRET_KEY:
+            raise ValueError("SECRET_KEY not set.")
+        if not self.JWT_SECRET:
+            raise ValueError("JWT_SECRET not set.")
 
 config_options = {
     'testing': TestConfig,
