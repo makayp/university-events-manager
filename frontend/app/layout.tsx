@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Inter, Lusitana } from 'next/font/google';
+import { Inter, Poppins } from 'next/font/google';
 import clsx from 'clsx';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
-const lusitana = Lusitana({
+const lusitana = Poppins({
   subsets: ['latin'],
   weight: ['400', '700'],
   variable: '--font-serif',

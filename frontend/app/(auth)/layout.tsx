@@ -4,11 +4,8 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className='p-2 space-y-10 md:space-y-36'>
-      <header className='bg-primary rounded-md p-5 leading-none'>
-        <h1 className='text-white text-4xl font-serif sm:mt-12'>Logo</h1>
-      </header>
-      <main>{children}</main>
-    </div>
+    <main className='flex items-center justify-center p-2 min-h-dvh'>
+      <div className='w-full'>{children}</div>
+    </main>
   );
 }

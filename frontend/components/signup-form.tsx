@@ -25,15 +25,14 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 
-import Warning from '@/public/icons/warning.svg';
 import { SignupFormSchema } from '@/lib/validator';
 
 export function SignupForm() {
   const form = useForm<z.infer<typeof SignupFormSchema>>({
     resolver: zodResolver(SignupFormSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      first_name: '',
+      last_name: '',
       email: '',
       password: '',
     },
@@ -41,18 +40,12 @@ export function SignupForm() {
 
   function onSubmit(values: z.infer<typeof SignupFormSchema>) {
     console.log(values);
-    form.setError('root.invalidCredentials', {
-      message: 'Invalid credentials',
-    });
-    // console.log(form.formState.errors);
   }
 
   return (
-    <Card className='mx-auto max-w-[500px] shadow-none flex flex-col'>
+    <Card className='mx-auto max-w-[450px] shadow-none flex flex-col'>
       <CardHeader>
-        <CardTitle className='text-2xl font-semibold font-serif tracking-normal'>
-          Create Account
-        </CardTitle>
+        <CardTitle className='text-2xl'>Create Account</CardTitle>
         <CardDescription>
           Enter your information below to sign up.
         </CardDescription>
@@ -63,7 +56,7 @@ export function SignupForm() {
             <div className='grid grid-cols-2 gap-2'>
               <FormField
                 control={form.control}
-                name='firstName'
+                name='first_name'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Firstname</FormLabel>
@@ -77,7 +70,7 @@ export function SignupForm() {
               />
               <FormField
                 control={form.control}
-                name='lastName'
+                name='last_name'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Lastname</FormLabel>
@@ -125,10 +118,7 @@ export function SignupForm() {
               )}
             />
 
-            <Button
-              type='submit'
-              className='w-full bg-primary hover:bg-primary/90'
-            >
+            <Button type='submit' className='w-full'>
               Create account
             </Button>
           </form>
