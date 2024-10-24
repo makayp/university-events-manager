@@ -53,11 +53,10 @@ export function LoginForm() {
 
     if (data?.ok && data.url) {
       const url = new URL(data.url);
-      console.log(url.searchParams.get('callbackUrl'));
 
       const callbackUrl = url.searchParams.get('callbackUrl') as string;
 
-      router.push(callbackUrl);
+      router.replace(callbackUrl || '/');
     }
   }
 
