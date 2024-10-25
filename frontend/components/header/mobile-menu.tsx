@@ -1,6 +1,7 @@
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -19,6 +20,7 @@ export default function MobileMenu() {
         <SheetContent className='flex flex-col gap-12 sm:hidden'>
           <SheetHeader>
             <SheetTitle className='text-left'>Events</SheetTitle>
+            <SheetDescription></SheetDescription>
           </SheetHeader>
           <NavLinks />
         </SheetContent>
