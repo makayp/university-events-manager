@@ -118,7 +118,10 @@ export function SignupForm() {
               )}
             />
 
-            <Button type='submit' className='w-full'>
+            <Button
+              type='submit'
+              className='w-full bg-accent hover:bg-accent/90'
+            >
               Create account
             </Button>
           </form>

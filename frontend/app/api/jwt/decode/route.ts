@@ -2,8 +2,8 @@ import jwt from 'jsonwebtoken';
 import { type NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
-  const url = new URL(req.url); // Parse the URL
-  const authToken = url.searchParams.get('authToken'); // Get the token from query parameters
+  const url = new URL(req.url);
+  const authToken = url.searchParams.get('authToken');
 
   if (!authToken) {
     return new Response(JSON.stringify({ error: 'No token provided' }), {

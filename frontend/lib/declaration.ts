@@ -1,4 +1,4 @@
-export type SessionUser = {
+export interface SessionUser {
   id: string;
   first_name: string;
   last_name: string;
@@ -6,4 +6,4 @@ export type SessionUser = {
   image: string;
   password: string;
   accessToken: string;
-};
+}

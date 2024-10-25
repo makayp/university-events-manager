@@ -44,8 +44,6 @@ export function LoginForm() {
   async function onSubmit(values: z.infer<typeof LoginFormSchema>) {
     const data = await signIn('credentials', { ...values, redirect: false });
 
-    console.log(data);
-
     if (data?.error === 'Invalid credentials')
       form.setError('root.invalidCredentials', {
         message: 'Invalid credentials',
@@ -120,7 +118,10 @@ export function LoginForm() {
               </FormMessage>
             )}
 
-            <Button type='submit' className='w-full'>
+            <Button
+              type='submit'
+              className='w-full bg-accent hover:bg-accent/90'
+            >
               Login
             </Button>
           </form>
