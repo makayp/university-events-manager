@@ -27,32 +27,43 @@ import { Input } from '@/components/ui/input';
 
 import Warning from '@/public/icons/warning.svg';
 import { LoginFormSchema } from '@/lib/validator';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export function LoginForm() {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof LoginFormSchema>>({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: 'jane@email.com',
+      password: 'jane123',
     },
   });
 
-  function onSubmit(values: z.infer<typeof LoginFormSchema>) {
-    console.log(values);
-    form.setError(
-      'root.invalidCredentials',
-      { message: 'Invalid credentials' },
-      { shouldFocus: true }
-    );
-    console.log(form.formState.errors);
+  async function onSubmit(values: z.infer<typeof LoginFormSchema>) {
+    const data = await signIn('credentials', { ...values, redirect: false });
+
+    console.log(data);
+
+    if (data?.error === 'Invalid credentials')
+      form.setError('root.invalidCredentials', {
+        message: 'Invalid credentials',
+      });
+
+    if (data?.ok && data.url) {
+      const url = new URL(data.url);
+
+      const callbackUrl = url.searchParams.get('callbackUrl') as string;
+
+      router.replace(callbackUrl || '/');
+    }
   }
 
   return (
-    <Card className='mx-auto max-w-[500px] shadow-none flex flex-col'>
+    <Card className='mx-auto max-w-[400px] shadow-none flex flex-col'>
       <CardHeader>
-        <CardTitle className='text-2xl font-semibold font-serif tracking-normal'>
-          Login
-        </CardTitle>
+        <CardTitle className='text-2xl'>Login</CardTitle>
         <CardDescription>
           Enter your credentials to login to your account.
         </CardDescription>
@@ -109,10 +120,7 @@ export function LoginForm() {
               </FormMessage>
             )}
 
-            <Button
-              type='submit'
-              className='w-full bg-primary hover:bg-primary/90'
-            >
+            <Button type='submit' className='w-full'>
               Login
             </Button>
           </form>
