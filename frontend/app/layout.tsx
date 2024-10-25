@@ -2,11 +2,12 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Inter, Poppins } from 'next/font/google';
 import clsx from 'clsx';
+import SessionProvider from '@/app/context/session-provider';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
-const lusitana = Poppins({
+const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: ['100', '200', '300', '400', '500', '600', '700'],
   variable: '--font-serif',
 });
 
@@ -31,10 +32,10 @@ export default function RootLayout({
         className={clsx(
           'font-sans antialiased',
           inter.variable,
-          lusitana.variable
+          poppins.variable
         )}
       >
-        {children}
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );

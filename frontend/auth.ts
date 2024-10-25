@@ -22,7 +22,8 @@ export default NextAuth({
           first_name: 'Jane',
           last_name: 'Doe',
           email: 'jane@email.com',
-          image: '/avatar',
+          image:
+            'https://res.cloudinary.com/denbrnoaj/image/upload/v1721705266/nextjs-course-mutations/hyot7deg8hk5xfwdbz6w.jpg',
           password: 'jane123',
           accessToken: 'test',
         };
