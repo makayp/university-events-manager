@@ -1,12 +1,22 @@
 'use client';
 
-import { SessionUser } from '@/lib/declaration';
-import { useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 
 export default function Page() {
-  const session = useSession();
+  const [user, setUser] = useState('');
 
-  const user = session.data?.user as SessionUser;
+  useEffect(function () {
+    async function getUser() {
+      const session = await getSession();
 
-  return <div>{user?.first_name}&apos;s Account</div>;
+      if (session) setUser(session.user.first_name);
+    }
+
+    getUser();
+
+    console.log('Heey from useEffect');
+  }, []);
+
+  return <div>{user}&apos;s Account</div>;
 }

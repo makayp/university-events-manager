@@ -1,18 +1,10 @@
-import { withAuth } from 'next-auth/middleware';
+import NextAuth from 'next-auth';
 import { authConfig } from './auth.config';
 
-export default withAuth({
-  ...authConfig,
-
-  callbacks: {
-    authorized({ req, token }) {
-      return !!token;
-    },
-  },
-});
+export default NextAuth(authConfig).auth;
 
 export const config = {
-  // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-  // matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
-  matcher: ['/event/create', '/account/:path*'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+  ],
 };

@@ -1,7 +1,5 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,8 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import LogoutButton from './logout-button';
-import { useSession } from 'next-auth/react';
+import LogoutButton from './auth/logout-button';
 import {
   AdjustmentsHorizontalIcon,
   ClockIcon,
@@ -19,6 +16,7 @@ import {
   UserIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import UserAvatar from './user-avatar';
 
 const profileLinks = [
   { name: 'Profile', href: '/account', icon: UserIcon },
@@ -35,19 +33,12 @@ const profileLinks = [
   },
 ];
 
-export default function UserDropdown() {
-  const session = useSession();
-
-  if (session.status !== 'authenticated') return null;
-
+export default function UserDropdown({ imageSrc }: { imageSrc: string }) {
   return (
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger className='block focus:outline-none'>
-          <Avatar className='size-9 ring-1 ring-offset-1 ring-gray-900/10'>
-            <AvatarImage src={session.data?.user?.image || ''} />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <UserAvatar imageSrc={imageSrc} />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>

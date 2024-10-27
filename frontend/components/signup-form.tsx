@@ -25,11 +25,11 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 
-import { SignupFormSchema } from '@/lib/validator';
+import { SignUpSchema } from '@/lib/zod';
 
 export function SignupForm() {
-  const form = useForm<z.infer<typeof SignupFormSchema>>({
-    resolver: zodResolver(SignupFormSchema),
+  const form = useForm<z.infer<typeof SignUpSchema>>({
+    resolver: zodResolver(SignUpSchema),
     defaultValues: {
       first_name: '',
       last_name: '',
@@ -38,7 +38,7 @@ export function SignupForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof SignupFormSchema>) {
+  function onSubmit(values: z.infer<typeof SignUpSchema>) {
     console.log(values);
   }
 

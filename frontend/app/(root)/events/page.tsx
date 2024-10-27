@@ -1,9 +1,11 @@
-import Link from 'next/link';
+export default async function Page() {
+  const res = await fetch('http://localhost:8000/test');
 
-export default function Page() {
+  const response = await res.json();
   return (
     <div>
-      Events <Link href='/event/hello'>test</Link>
+      Events
+      <div>{JSON.stringify(response)}</div>
     </div>
   );
 }

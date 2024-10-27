@@ -1,13 +1,13 @@
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Sheet } from '../ui/sheet';
+import { Skeleton } from '../ui/skeleton';
+import HeaderAction from './header-action';
 import MobileMenu from './mobile-menu';
 import NavLinks from './nav-links';
-import { Input } from '../ui/input';
-import SignedOut from '../auth/signed-out';
-import SignedIn from '../auth/signed-in';
-import UserDropdown from '../user-dropdown';
-import { Sheet } from '../ui/sheet';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 export default function Header() {
   return (
@@ -26,7 +26,7 @@ export default function Header() {
           <Button
             type='submit'
             variant='outline'
-            className='absolute text-sm text-white/90 hover:text-white bg-accent hover:bg-accent/90 p-1 rounded-full right-2 transition-all duration-200 h-fit border-none'
+            className='absolute text-sm text-white/90 hover:text-white bg-accent hover:bg-accent/90 p-1 rounded-full right-1 transition-all duration-200 h-fit border-none'
           >
             <span className='text-sm pl-2 hidden xl:block'>Search</span>
             <MagnifyingGlassIcon className='size-3' />{' '}
@@ -38,20 +38,9 @@ export default function Header() {
         <NavLinks className='hidden sm:flex' />
       </Sheet>
 
-      <div className='min-w-sm'>
-        <SignedOut>
-          <Button
-            asChild
-            className='bg-accent hover:bg-accent/90 h-8 md:h-10 md:rounded-md md:px-8'
-          >
-            <Link href='/login'>Login</Link>
-          </Button>
-        </SignedOut>
-
-        <SignedIn>
-          <UserDropdown />
-        </SignedIn>
-      </div>
+      <Suspense fallback={<Skeleton className='w-14 h-4 rounded-xl' />}>
+        <HeaderAction />
+      </Suspense>
 
       <MobileMenu />
     </header>

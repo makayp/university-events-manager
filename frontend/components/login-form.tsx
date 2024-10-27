@@ -26,36 +26,21 @@ import {
 import { Input } from '@/components/ui/input';
 
 import Warning from '@/public/icons/warning.svg';
-import { LoginFormSchema } from '@/lib/validator';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { SignInSchema } from '@/lib/zod';
+import { login } from '@/lib/action';
 
 export function LoginForm() {
-  const router = useRouter();
-
-  const form = useForm<z.infer<typeof LoginFormSchema>>({
-    resolver: zodResolver(LoginFormSchema),
+  const form = useForm<z.infer<typeof SignInSchema>>({
+    resolver: zodResolver(SignInSchema),
     defaultValues: {
       email: 'jane@email.com',
       password: 'jane123',
     },
   });
 
-  async function onSubmit(values: z.infer<typeof LoginFormSchema>) {
-    const data = await signIn('credentials', { ...values, redirect: false });
-
-    if (data?.error === 'Invalid credentials')
-      form.setError('root.invalidCredentials', {
-        message: 'Invalid credentials',
-      });
-
-    if (data?.ok && data.url) {
-      const url = new URL(data.url);
-
-      const callbackUrl = url.searchParams.get('callbackUrl') as string;
-
-      router.replace(callbackUrl || '/');
-    }
+  async function onSubmit(values: z.infer<typeof SignInSchema>) {
+    const error = await login(values);
+    form.setError('root', { message: error });
   }
 
   return (
@@ -111,10 +96,10 @@ export function LoginForm() {
                 </FormItem>
               )}
             />
-            {form.formState.errors.root?.invalidCredentials && (
+            {form.formState.errors.root && (
               <FormMessage className='flex items-center gap-1'>
                 <Warning className='size-[1.5rem] text-destructive' />{' '}
-                {form.formState.errors.root?.invalidCredentials.message}
+                {form.formState.errors.root.message}
               </FormMessage>
             )}
 
