@@ -2,8 +2,9 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
 
-export default NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
+
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -18,7 +19,7 @@ export default NextAuth({
 
       async authorize(credentials) {
         const testUser = {
-          id: Date.now() + '',
+          id: '12345',
           first_name: 'Jane',
           last_name: 'Doe',
           email: 'jane@email.com',
@@ -32,7 +33,7 @@ export default NextAuth({
           credentials?.email !== testUser.email ||
           credentials?.password !== testUser.password
         )
-          throw new Error('Invalid credentials');
+          return null;
 
         const { password, ...user } = testUser;
 

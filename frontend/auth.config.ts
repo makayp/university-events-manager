@@ -1,17 +1,37 @@
-import { NextAuthOptions } from 'next-auth';
+import { NextAuthConfig } from 'next-auth';
 import { SessionUser } from './lib/declaration';
+import { NextResponse } from 'next/server';
+import { isProtectedRoute } from './lib/utils';
 
 export const authConfig = {
   providers: [],
+  trustHost: true,
   pages: {
     signIn: '/login',
     //verifyRequest: '/verify-email',
   },
   callbacks: {
+    async authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth;
+      const pathname = nextUrl.pathname;
+
+      const isOnProtectedRoute = isProtectedRoute(pathname);
+
+      if (isOnProtectedRoute && !isLoggedIn) {
+        return false; // Redirect or deny access
+      }
+
+      if (isLoggedIn) {
+        if (pathname.startsWith('/login') || pathname.startsWith('/signup'))
+          return NextResponse.redirect(new URL('/', nextUrl.origin));
+      }
+
+      return true; // Allow access if authenticated or not on a private path
+    },
     async jwt({ token, user }) {
       if (user) {
-        token.user = user;
-        token.exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24;
+        token.user = user as SessionUser;
+        token.exp = Math.floor(Date.now() / 1000) + 60;
       }
       return token;
     },
@@ -24,6 +44,7 @@ export const authConfig = {
     strategy: 'jwt',
     maxAge: 60 * 60 * 24 * 14,
   },
+
   jwt: {
     async encode({ token }) {
       let encodedToken;
@@ -43,6 +64,7 @@ export const authConfig = {
         console.log('Error encoding token', err);
         return null;
       }
+      // console.log(token);
       return encodedToken;
     },
 
@@ -62,4 +84,4 @@ export const authConfig = {
       return decoded;
     },
   },
-} satisfies NextAuthOptions;
+} satisfies NextAuthConfig;

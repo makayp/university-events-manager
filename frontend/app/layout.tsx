@@ -3,6 +3,7 @@ import './globals.css';
 import { Inter, Poppins } from 'next/font/google';
 import clsx from 'clsx';
 import SessionProvider from '@/app/context/session-provider';
+import AuthProvider from './context/auth-context';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const poppins = Poppins({
@@ -35,7 +36,9 @@ export default function RootLayout({
           poppins.variable
         )}
       >
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </SessionProvider>
       </body>
     </html>
   );

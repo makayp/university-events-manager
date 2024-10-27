@@ -1,11 +1,18 @@
-'use client';
+import { auth } from '@/auth';
 
-import { useSession } from 'next-auth/react';
+export default async function SignedIn({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await auth();
 
-export default function SignedIn({ children }: { children: React.ReactNode }) {
-  const session = useSession();
+  console.log(session);
 
-  if (session.status !== 'authenticated') return null;
+  if (!session) {
+    console.log('No session ');
+    return null;
+  }
 
   return children;
 }

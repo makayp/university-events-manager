@@ -1,15 +1,13 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-import { Skeleton } from '../ui/skeleton';
+import { useAuth } from '@/app/context/auth-context';
+// import { Skeleton } from '../ui/skeleton';
 
 export default function SignedOut({ children }: { children: React.ReactNode }) {
-  const session = useSession();
+  const { isLoggedIn } = useAuth();
+  console.log(isLoggedIn);
 
-  if (session.status === 'loading')
-    return <Skeleton className='w-14 h-4 rounded-xl' />;
-
-  if (session.status !== 'unauthenticated') return null;
+  if (isLoggedIn) return null;
 
   return children;
 }
