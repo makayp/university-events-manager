@@ -2,7 +2,8 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy import CheckConstraint, PrimaryKeyConstraint
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
-import random, string, os, hashlib
+import random, string, os, hashlib, jwt
+from flask import current_app
 
 SALT_LEN = 16
 
@@ -17,7 +18,6 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
     first_name = db.Column(db.String(30), nullable=False)
     last_name = db.Column(db.String(30), nullable=False)
-
 
     def __init__(self, email, email_ext, password, first_name, last_name):
         self.email = email
