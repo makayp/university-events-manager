@@ -1,14 +1,15 @@
 import { NextAuthConfig } from 'next-auth';
-import { SessionUser } from './lib/declaration';
+import { CustomJWTPayload, SessionUser } from './lib/declaration';
 import { NextResponse } from 'next/server';
 import { isProtectedRoute } from './lib/utils';
+import { encode, decode } from './lib/auth';
+import { decodeJwt } from 'jose';
 
 export const authConfig = {
   providers: [],
   trustHost: true,
   pages: {
     signIn: '/login',
-    //verifyRequest: '/verify-email',
   },
   callbacks: {
     async authorized({ auth, request: { nextUrl } }) {
@@ -26,12 +27,12 @@ export const authConfig = {
           return NextResponse.redirect(new URL('/', nextUrl.origin));
       }
 
-      return true; // Allow access if authenticated or not on a private path
+      return true;
     },
     async jwt({ token, user }) {
       if (user) {
-        token.user = user as SessionUser;
-        token.exp = Math.floor(Date.now() / 1000) + 60;
+        token.user = user;
+        token.exp = decodeJwt(user.accessToken).exp;
       }
       return token;
     },
@@ -47,41 +48,13 @@ export const authConfig = {
 
   jwt: {
     async encode({ token }) {
-      let encodedToken;
-      try {
-        const res = await fetch(`${process.env.NEXTAUTH_URL}/api/jwt/encode`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token }),
-        });
-
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-        encodedToken = data.token;
-      } catch (err) {
-        console.log('Error encoding token', err);
-        return null;
-      }
-      // console.log(token);
+      const encodedToken = await encode(token as CustomJWTPayload);
       return encodedToken;
     },
 
     async decode({ token }) {
-      let decoded;
-      try {
-        const res =
-          await fetch(`${process.env.NEXTAUTH_URL}/api/jwt/decode?authToken=${token}
-  `);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-        decoded = data.payload;
-      } catch (err) {
-        console.log('error decoding token', err);
-        return null;
-      }
-      return decoded;
+      const decodedToken = await decode(token!);
+      return decodedToken;
     },
   },
 } satisfies NextAuthConfig;
