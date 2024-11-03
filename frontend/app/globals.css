@@ -3,20 +3,22 @@
 @tailwind utilities;
 
 @layer base {
-  /* :root {
+  :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
+    --primary: 12 76% 55%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
+    --secondary: 215 100% 29%;
+    /* --secondary: 0 0% 96.1%; */
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
+    --accent: 12 76% 55%;
+    /* --accent: 0 0% 96.1%; */
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -55,61 +57,6 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-  } */
-
-  :root {
-    --background: 0 0% 100%; /* White */
-    --foreground: 0 0% 3.9%; /* Almost Black */
-    --card: 0 0% 100%; /* White */
-    --card-foreground: 0 0% 3.9%; /* Almost Black */
-    --popover: 0 0% 100%; /* White */
-    --popover-foreground: 0 0% 3.9%; /* Almost Black */
-    --primary: 215 100% 29%; /* Deep Blue */
-    --primary-foreground: 0 0% 100%; /* White */
-    --secondary: 197 76% 86%; /* Soft Cyan */
-    --secondary-foreground: 0 0% 9%; /* Dark Gray */
-    --muted: 197 76% 86%; /* Soft Cyan */
-    --muted-foreground: 0 0% 45.1%; /* Medium Gray */
-    --accent: 12 76% 55%; /* Bright Coral */
-    --accent-foreground: 0 0% 9%; /* Dark Gray */
-    --destructive: 0 84.2% 60.2%; /* Bright Red */
-    --destructive-foreground: 0 0% 98%; /* White */
-    --border: 0 0% 89.8%; /* Light Gray */
-    --input: 0 0% 89.8%; /* Light Gray */
-    --ring: 220 100% 50%; /* Deep Blue */
-    --chart-1: 12 76% 61%; /* Coral */
-    --chart-2: 173 58% 39%; /* Cyan */
-    --chart-3: 43 74% 66%; /* Muted Yellow */
-    --chart-4: 215 100% 29%; /* Deep Blue */
-    --chart-5: 27 87% 67%; /* Muted Yellow */
-    --radius: 0.5rem; /* Default Border Radius */
-  }
-
-  .dark {
-    --background: 0 0% 3.9%; /* Almost Black */
-    --foreground: 0 0% 98%; /* White */
-    --card: 0 0% 3.9%; /* Almost Black */
-    --card-foreground: 0 0% 98%; /* White */
-    --popover: 0 0% 3.9%; /* Almost Black */
-    --popover-foreground: 0 0% 98%; /* White */
-    --primary: 0 0% 98%; /* White */
-    --primary-foreground: 215 100% 29%; /* Deep Blue */
-    --secondary: 0 0% 14.9%; /* Dark Gray */
-    --secondary-foreground: 0 0% 98%; /* White */
-    --muted: 0 0% 14.9%; /* Dark Gray */
-    --muted-foreground: 0 0% 63.9%; /* Light Gray */
-    --accent: 12 76% 61%; /* Coral */
-    --accent-foreground: 0 0% 98%; /* White */
-    --destructive: 0 62.8% 30.6%; /* Dark Red */
-    --destructive-foreground: 0 0% 98%; /* White */
-    --border: 0 0% 14.9%; /* Dark Gray */
-    --input: 0 0% 14.9%; /* Dark Gray */
-    --ring: 215 100% 29%; /* Deep Blue */
-    --chart-1: 12 76% 61%; /* Coral */
-    --chart-2: 173 58% 39%; /* Cyan */
-    --chart-3: 43 74% 66%; /* Muted Yellow */
-    --chart-4: 215 100% 29%; /* Deep Blue */
-    --chart-5: 27 87% 67%; /* Muted Yellow */
   }
 }
 @layer base {
@@ -119,4 +66,43 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .textarea {
+    @apply flex flex-1 placeholder:text-gray-400 border-none bg-slate-50 focus-visible:ring-offset-0 focus-visible:ring-0 px-3 py-3 h-64 !important;
+  }
+
+  .input {
+    @apply h-12 rounded-2xl placeholder:text-gray-400 border-none bg-slate-50 focus-visible:ring-offset-0 focus-visible:ring-0 px-3 py-3 shadow-none !important;
+  }
+
+  @layer utilities {
+    .container {
+      @apply lg:max-w-6xl;
+    }
+  }
+}
+
+.datePicker {
+  flex-grow: 1;
+}
+
+.react-datepicker-popper {
+  left: -50px !important;
+}
+
+.react-datepicker__input-container input {
+  background-color: transparent;
+  width: 100%;
+  outline: none;
+  margin-left: 16px;
+}
+
+.react-datepicker__day--selected {
+  background-color: hsl(var(--primary)) !important;
+  color: #ffffff !important;
+  border-radius: 4px;
+}
+
+.react-datepicker__time-list-item--selected {
+  background-color: hsl(var(--primary)) !important;
 }

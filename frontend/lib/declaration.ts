@@ -33,7 +33,7 @@ export type EventData = {
   image: string;
   start_date: string;
   end_date: string;
-  capacity: number;
+  url: '';
 };
 
 export type DBUser = {

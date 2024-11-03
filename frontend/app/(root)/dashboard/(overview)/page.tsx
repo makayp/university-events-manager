@@ -1,3 +1,3 @@
 export default function Page() {
-  return <div>Create event</div>;
+  return <div>Dashboard</div>;
 }

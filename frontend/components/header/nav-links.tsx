@@ -9,7 +9,7 @@ import { SheetClose } from '../ui/sheet';
 const links = [
   { name: 'Home', href: '/' },
   { name: 'Events', href: '/events' },
-  { name: 'Create event', href: '/event/create' },
+  { name: 'Create event', href: '/events/create' },
 ];
 
 export default function NavLinks({ className }: { className?: string }) {
@@ -27,17 +27,13 @@ export default function NavLinks({ className }: { className?: string }) {
           <Link
             href={link.href}
             className={clsx(
-              'hover:text-accent text-base sm:text-base font-medium opacity-85 font-serif',
+              'hover:text-accent text-base sm:text-base font-medium opacity-85',
               {
-                'text-accent':
-                  pathname === '/'
-                    ? link.href === pathname
-                    : link.href !== '/' && pathname.startsWith(link.href),
+                'text-accent': pathname === link.href,
               }
             )}
           >
-            {' '}
-            {link.name}{' '}
+            {link.name}
           </Link>
         </SheetClose>
       ))}

@@ -1,5 +1,3 @@
-'use client';
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,16 +17,17 @@ import Link from 'next/link';
 import UserAvatar from './user-avatar';
 
 const profileLinks = [
-  { name: 'Profile', href: '/account', icon: UserIcon },
-  { name: 'My events', href: '/account/events', icon: TicketIcon },
+  { name: 'Dashboard', href: '/dashboard', icon: UserIcon },
+  { name: 'Profile', href: '/dashboard/profile', icon: UserIcon },
+  { name: 'My events', href: '/dashboard/my-events', icon: TicketIcon },
   {
-    name: 'My Upcoming',
-    href: '/account/upcoming',
+    name: 'RSVP Events',
+    href: '/dashboard/rsvps',
     icon: ClockIcon,
   },
   {
     name: 'Edit profile',
-    href: '/account/edit',
+    href: '/dashboard/profile',
     icon: AdjustmentsHorizontalIcon,
   },
 ];
@@ -37,10 +36,10 @@ export default function UserDropdown({ imageSrc }: { imageSrc: string }) {
   return (
     <div>
       <DropdownMenu>
-        <DropdownMenuTrigger className='block focus:outline-none'>
+        <DropdownMenuTrigger asChild className='block focus:outline-none'>
           <UserAvatar imageSrc={imageSrc} />
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className='w-40'>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {profileLinks.map((link) => {

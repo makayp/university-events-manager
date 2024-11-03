@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import z from 'zod';
 
 export const SignInSchema = z.object({
   email: z
@@ -29,4 +29,25 @@ export const SignUpSchema = z
   .refine((data) => data.email.toLowerCase().endsWith('brandonu.ca'), {
     message: 'Enter your BU email address',
     path: ['email'],
+  });
+
+export const EventFormSchema = z
+  .object({
+    title: z.string().min(3, 'Title must be at least 3 characters'),
+    description: z
+      .string()
+      .min(3, 'Description must be at least 3 characters')
+      .max(400, 'Description must be less than 400 characters'),
+    imageUrl: z.string().min(1, 'Please select an image to upload'),
+    location: z
+      .string()
+      .min(3, 'Location must be at least 3 characters')
+      .max(400, 'Location must be less than 400 characters'),
+    startDateTime: z.date(),
+    endDateTime: z.date(),
+    url: z.string().url(),
+  })
+  .refine((data) => data.startDateTime < data.endDateTime, {
+    message: 'End date must be after start date',
+    path: ['endDateTime'],
   });

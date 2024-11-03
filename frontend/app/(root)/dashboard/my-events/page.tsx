@@ -1,3 +1,3 @@
 export default function Page() {
-  return <div>My Upcoming</div>;
+  return <div>My events</div>;
 }
