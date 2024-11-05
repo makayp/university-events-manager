@@ -8,7 +8,7 @@ import { SheetClose } from '../ui/sheet';
 
 const links = [
   { name: 'Home', href: '/' },
-  { name: 'Events', href: '/events' },
+  { name: 'Find events', href: '/events' },
   { name: 'Create event', href: '/events/create' },
 ];
 

@@ -17,18 +17,29 @@ import { EventFormSchema } from '@/lib/zod';
 import { Textarea } from './ui/textarea';
 import ImageUploader from './image-uploader';
 import { useState } from 'react';
-import { CalendarIcon, LinkIcon, MapPinIcon } from '@heroicons/react/24/solid';
+import {
+  CalendarDateRangeIcon,
+  LinkIcon,
+  MapPinIcon,
+} from '@heroicons/react/20/solid';
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { EventData } from '@/lib/declaration';
 
-export default function EventForm({ type }: { type: string }) {
+export default function EventForm({
+  type,
+  event,
+}: {
+  type: string;
+  event?: EventData;
+}) {
   const [image, setImage] = useState<File | null>(null);
 
   const initialValues = {
     title: '',
     description: '',
-    imageUrl: '',
+    image: '',
     location: '',
     startDateTime: new Date(),
     endDateTime: new Date(),
@@ -37,7 +48,7 @@ export default function EventForm({ type }: { type: string }) {
 
   const form = useForm<z.infer<typeof EventFormSchema>>({
     resolver: zodResolver(EventFormSchema),
-    defaultValues: initialValues,
+    defaultValues: event || initialValues,
   });
 
   function onSubmit(values: z.infer<typeof EventFormSchema>) {
@@ -90,7 +101,7 @@ export default function EventForm({ type }: { type: string }) {
           />
           <FormField
             control={form.control}
-            name='imageUrl'
+            name='image'
             render={({ field }) => (
               <FormItem className='w-full'>
                 <FormControl>
@@ -138,7 +149,7 @@ export default function EventForm({ type }: { type: string }) {
               <FormItem className='w-full'>
                 <FormControl>
                   <div className='flex items-center px-4 py-2 h-12 w-full bg-slate-50 rounded-2xl'>
-                    <CalendarIcon className='size-5 text-secondary/80' />
+                    <CalendarDateRangeIcon className='size-5 text-secondary/80' />
 
                     <p className='ml-3 whitespace-nowrap text-gray-400 text-sm'>
                       Start Date:
@@ -168,7 +179,7 @@ export default function EventForm({ type }: { type: string }) {
               <FormItem className='w-full'>
                 <FormControl>
                   <div className='flex items-center px-4 py-2 h-12 w-full bg-slate-50 rounded-2xl'>
-                    <CalendarIcon className='size-5 text-secondary/80' />
+                    <CalendarDateRangeIcon className='size-5 text-secondary/80' />
 
                     <p className='ml-3 whitespace-nowrap text-gray-400 text-sm'>
                       End Date:
@@ -201,7 +212,7 @@ export default function EventForm({ type }: { type: string }) {
                   <div className='flex items-center  px-4 py-2 h-12 w-full bg-slate-50 rounded-2xl'>
                     <LinkIcon className='size-5 text-secondary/80' />
                     <Input
-                      placeholder='Url'
+                      placeholder='URL'
                       {...field}
                       className='input shadow-none'
                     />
