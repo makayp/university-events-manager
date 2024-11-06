@@ -96,7 +96,6 @@ def create_event(user):
         end_time = data.get("end_time")
         location = data.get("location")
         
-        # Validate the data
         if not event_name or not start_time or not location:
             return jsonify({
                 "success": False,
@@ -146,9 +145,6 @@ def get_event(event_id):
                 "message": "Event not found."
             }), 404
 
-        start_time = event.start_time.isoformat() if event.start_time else None
-        end_time = event.end_time.isoformat() if event.end_time else None
-
         event_data = {
             "id": event.id,
             "user_info": {
@@ -158,10 +154,10 @@ def get_event(event_id):
             },
             "event_name": event.event_name,
             "description": event.description,
-            "start_time": start_time,
-            "end_time": end_time,
+            "start_time": event.start_time,
+            "end_time": event.end_time,
             "location": event.location,
-            "created_at": event.created_at.isoformat()
+            "created_at": event.created_at
         }
 
         return jsonify({
@@ -187,7 +183,11 @@ def update_event(user, event_id):
                 "success": False,
                 "message": "Event not found."
             }), 404
-
+        if event.user_id != user.id:
+            return jsonify({
+                "success": False,
+                "message": "Unauthorized Aceess."
+            }), 401
         try:
             event.event_name = data.get("event_name", event.event_name)
             event.description = data.get("description", event.description)
@@ -224,7 +224,11 @@ def delete_event(user, event_id):
                 "success": False,
                 "message": "Event not found."
             }), 404
-
+        if event.user_id != user.id:
+            return jsonify({
+                "success": False,
+                "message": "Unauthorized Aceess."
+            }), 401
         db.session.delete(event)
         db.session.commit()
 
