@@ -5,7 +5,7 @@ from datetime import timedelta, datetime, timezone
 from functools import wraps
 import re, jwt, os
 
-auth_bp = Blueprint('auth', __name__, url_prefix="/auth/")
+auth_bp = Blueprint('auth', __name__, url_prefix="/api/auth/")
 
 PASSWORD_LENGTH = current_app.config['PASSWORD_LENGTH']
 JWT_SECRET = current_app.config['JWT_SECRET']
@@ -43,9 +43,10 @@ def generate_jwt(user: User):
     if not user:
         raise ValueError("User object cannot be None")
      
+    expiration = (datetime.now(timezone.utc) + JWT_EXPIRATION).isoformat()
     payload = {
         'user_id': user.id,
-        'exp': datetime.now(timezone.utc) + JWT_EXPIRATION
+        'expiry': expiration
     }
     token = jwt.encode(payload, JWT_SECRET, algorithm='HS256')
     return token
@@ -71,25 +72,27 @@ def get_jwt_token():
 def authorize_request():
     token = get_jwt_token()
     if not token:
-        return None, jsonify({"success": False, "message": "Malformed Token."})
+        return None, jsonify({"success": False, "message": "Malformed Token."}), 400
     
     decoded_token = verify_jwt(token)
     if not decoded_token:
         return None, jsonify({"success": False, "message": "Invalid or expired JWT token."}), 401
 
     user_id = decoded_token.get('user_id')
-    user = User.query.get(user_id)
+    user = User.query.filter_by(id=user_id).first()
 
     if not user:
         return None, jsonify({"success": False, "message": "User not found."}), 404
 
-    return user, None
+    return user, None, 200
 
 def invalidate_jwt_token():
     token = get_jwt_token()
     decoded_token = verify_jwt(token)
-    expiry_date = datetime.fromtimestamp(decoded_token.get("exp"), timezone.utc)
-    invalid_jwt = BlacklistedToken(token, expiry_date=expiry_date)
+    
+    expiry_date = decoded_token.get("expiry")
+    
+    invalid_jwt = BlacklistedToken(token=token, expiry_date=expiry_date)
     
     db.session.add(invalid_jwt)
     db.session.commit()
@@ -97,9 +100,9 @@ def invalidate_jwt_token():
 def jwt_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        user, error = authorize_request()
+        user, error, code = authorize_request()
         if error:
-            return error
+            return error, code
         return f(user, *args, **kwargs)
     return decorated_function
 
@@ -169,12 +172,13 @@ def login():
     data = request.get_json()
 
     email = data.get('email')
+    normalized_email = normalize_email(email)[0]
     password = data.get('password')
 
     if not email or not password:
         return jsonify({"success": False, "message": "Email and password are required."}), 400
 
-    user = User.check_password(email, password)
+    user = User.checkpassword(normalized_email, password)
     if not user:
         return jsonify({"success": False, "message": "Invalid email or password."}), 401
 
@@ -182,7 +186,7 @@ def login():
 
     return jsonify({"success": True, "message": "Logged in successfully.", "token": token}), 200
 
-@auth_bp.route('/auth/logout', methods=['POST'])
+@auth_bp.route('/logout', methods=['POST'])
 @jwt_required
 def logout(user):
     invalidate_jwt_token()

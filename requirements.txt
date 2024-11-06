@@ -23,5 +23,6 @@ setuptools==75.1.0
 SQLAlchemy==2.0.35
 SQLAlchemy-Utils==0.41.2
 typing_extensions==4.12.2
+watchdog==5.0.3
 Werkzeug==3.0.4
 zope.interface==7.1.0

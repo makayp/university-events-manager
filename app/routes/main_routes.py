@@ -34,10 +34,8 @@ def my_events(user):
 def profile(user):
     return render_template("index.html")
 
-# Events
-
 # List of events
-@main_bp.route('/events')
+@main_bp.route('/')
 def event_list():
     return render_template("index.html")
 
@@ -48,7 +46,7 @@ def create_event(user):
     return render_template("index.html")
 
 # Event details
-@main_bp.route('/events/<int:event_id>')
+@main_bp.route('/events/<int:event_id>', methods=['GET'])
 def event_detail(event_id):
     return render_template("index.html")
 
@@ -56,6 +54,4 @@ def event_detail(event_id):
 @main_bp.route('/events/<int:event_id>/edit', methods=['GET', 'POST'])
 @jwt_required
 def edit_event(event_id, user):
-    return render_template("index.html")
-
-# Admin TODO
+    return render_template("index.html") 

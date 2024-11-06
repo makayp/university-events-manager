@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta, timezone
-from sqlalchemy import CheckConstraint, PrimaryKeyConstraint
+from sqlalchemy import CheckConstraint, PrimaryKeyConstraint, String, Integer, Column, Text, ForeignKey
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
-import random, string, os, hashlib, jwt
+import random, string
 from flask import current_app
 
 SALT_LEN = 16
@@ -10,28 +10,28 @@ SALT_LEN = 16
 class User(db.Model):
     __tablename__ = 'user'
 
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    email_ext = db.Column(db.String(20), nullable=True)
-    password_hash = db.Column(db.String(255), nullable=False)
-    password_salt = db.Column(db.String(SALT_LEN), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
-    first_name = db.Column(db.String(30), nullable=False)
-    last_name = db.Column(db.String(30), nullable=False)
+    id = Column(Integer, primary_key=True)
+    email = Column(String(255), unique=True, nullable=False)
+    email_ext = Column(String(20), nullable=True)
+    password_hash = Column(String(255), nullable=False)
+    password_salt = Column(String(SALT_LEN), nullable=False)
+    created_at = Column(String, default=datetime.now(timezone.utc).isoformat, nullable=False)
+    first_name = Column(String(30), nullable=False)
+    last_name = Column(String(30), nullable=False)
 
-    def __init__(self, email, email_ext, password, first_name, last_name):
+    def __init__(self:str, email:str, email_ext:str, password:str, first_name:str, last_name:str):
         self.email = email
         self.email_ext = email_ext
         self.password_salt = User.generate_salt()
         self.password_hash = generate_password_hash(password + self.password_salt)
-        self.first_name = first_name
-        self.last_name = last_name
+        self.first_name = first_name.capitalize()
+        self.last_name = last_name.capitalize()
 
     def __repr__(self):
         return f"<User {self.email}>"
 
     @staticmethod
-    def checkpassword(email, password):
+    def checkpassword(email:str, password:str):
         user = User.query.filter_by(email=email).first()
         if not user:
             return None
@@ -41,7 +41,7 @@ class User(db.Model):
             return None
 
     @staticmethod
-    def generate_salt(length=SALT_LEN):
+    def generate_salt(length:int=SALT_LEN) -> str:
         """Generates a random salt for hashing passwords."""
         characters = string.ascii_letters + string.digits
         return ''.join(random.choice(characters) for _ in range(length))
@@ -50,15 +50,14 @@ class User(db.Model):
 class Event(db.Model):
     __tablename__ = 'event'
     
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    event_name = db.Column(db.Text, nullable=False)
-    description = db.Column(db.Text, CheckConstraint('LENGTH(description) <= 500'), nullable=True)  # Limit to 500 characters
-    event_date = db.Column(db.Date, nullable=False)
-    start_time = db.Column(db.Time, nullable=False)
-    end_time = db.Column(db.Time, nullable=True)  # Optional end time
-    location = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    event_name = Column(Text, nullable=False)
+    description = Column(Text, CheckConstraint('LENGTH(description) <= 500'), nullable=True)  # Limit to 500 characters
+    start_time = Column(String, nullable=False)  # ISO format text for SQLite
+    end_time = Column(String, nullable=True)     # ISO format text for SQLite
+    location = Column(Text, nullable=False)
+    created_at = Column(String, default=datetime.now(timezone.utc).isoformat, nullable=False)
 
     # Relationship to User
     user = db.relationship('User', backref='events')
@@ -92,14 +91,13 @@ class EventRegister(db.Model):
 
 class BlacklistedToken(db.Model):
     __tablename__ = 'blacklisted_tokens'
+    
+    token = Column(String, primary_key=True, nullable=False)
+    expiry_date = Column(String, nullable=True) 
 
-    # We use the hashed JWT as the primary key since it's unique
-    token = db.Column(db.String, primary_key=True, nullable=False)
-    expiry_date = db.Column(db.Time, nullable=False)
-
-    def __init__(self, token, expiry):
+    def __init__(self, token, expiry_date):
         self.token = token
-        self.expiry_date = expiry
+        self.expiry_date = expiry_date
 
     def __repr__(self):
         return f'<BlacklistedToken(token_hash={self.token}, expires={self.expiry_date})>'
