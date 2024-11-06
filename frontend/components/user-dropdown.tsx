@@ -47,7 +47,7 @@ export default function UserDropdown({ imageSrc }: { imageSrc: string }) {
               <Link
                 href={link.href}
                 key={link.name}
-                className='flex gap-2 hover:bg-gray-900/10 rounded-sm'
+                className='flex gap-2 hover:bg-gray-900/5 rounded-sm'
               >
                 <DropdownMenuItem className='cursor-pointer'>
                   <link.icon className='size-4' /> {link.name}
@@ -56,7 +56,7 @@ export default function UserDropdown({ imageSrc }: { imageSrc: string }) {
             );
           })}
 
-          <DropdownMenuItem>
+          <DropdownMenuItem className='cursor-pointer hover:bg-gray-900/5'>
             <LogoutButton />
           </DropdownMenuItem>
         </DropdownMenuContent>

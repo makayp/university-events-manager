@@ -7,17 +7,20 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { SetStateAction } from 'react';
 
 export default function ConfirmDialog({
-  children,
+  isOpen,
+  setIsOpen,
+  action,
 }: {
-  children: React.ReactNode;
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<SetStateAction<boolean>>;
+  action: string;
 }) {
   return (
-    <AlertDialog>
-      <AlertDialogTrigger>{children}</AlertDialogTrigger>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -28,7 +31,7 @@ export default function ConfirmDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction>{action}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

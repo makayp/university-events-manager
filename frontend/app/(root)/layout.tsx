@@ -1,7 +1,5 @@
 import Header from '@/components/header/header';
 
-// export const dynamic = 'force-dynamic';
-
 export default function Layout({
   children,
 }: Readonly<{

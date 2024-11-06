@@ -31,3 +31,45 @@ export async function login(values: z.infer<typeof SignInSchema>) {
 export async function logout() {
   await signOut();
 }
+
+export async function getEvents(limit: number) {
+  let events;
+  try {
+    const res = await fetch('http:/localhost:8000/api/events');
+
+    events = await res.json();
+  } catch (error) {
+    console.log(error);
+    throw new Error('Failed to fetch latest events');
+  }
+
+  return events.slice(0, limit);
+}
+
+export async function getEventById(id: string) {
+  let event;
+  try {
+    const res = await fetch(`http://localhost:8000/api/events/${id}`);
+
+    event = await res.json();
+  } catch (error) {
+    console.log(error);
+    throw new Error('Failed to fetch event data');
+  }
+
+  return event;
+}
+
+export async function getEventOrganiser(id: string) {
+  let data;
+  try {
+    const res = await fetch(`http://localhost:8000/api/users/${id}`);
+
+    data = await res.json();
+  } catch (error) {
+    console.log(error);
+    throw new Error('Failed to fetch event data.');
+  }
+
+  return data;
+}

@@ -1,4 +1,5 @@
 import EventForm from '@/components/event-form';
+import { getEventById } from '@/lib/action';
 import { EventData } from '@/lib/declaration';
 import { EventFormSchema } from '@/lib/zod';
 import { z } from 'zod';
@@ -10,18 +11,20 @@ export default async function Page({
 }) {
   const { id } = await params;
 
-  //Isolate fetch function
-  const res = fetch(`http://localhost:8000/api/events/${id}`);
+  const event = await getEventById(id);
 
-  let data: EventData = await (await res).json();
+  //Fix types
+  // const eventData: z.infer<typeof EventFormSchema> = {
+  //   ...event,
+  //   startDateTime: new Date(event.start_date),
+  //   endDateTime: new Date(event.end_date),
+  // };
 
-  const eventData: z.infer<typeof EventFormSchema> = {
-    ...data,
-    startDateTime: new Date(data.start_date),
-    endDateTime: new Date(data.end_date),
+  const eventData = {
+    ...event,
+    startDateTime: new Date(event.start_date),
+    endDateTime: new Date(event.end_date),
   };
-
-  console.log(eventData);
 
   return (
     <div className='pb-20'>

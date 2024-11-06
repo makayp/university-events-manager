@@ -2,12 +2,12 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Poppins } from 'next/font/google';
 import clsx from 'clsx';
-import SessionProvider from '@/app/context/session-provider';
-import AuthProvider from './context/auth-context';
+import SessionProvider from '@/context/session-provider';
+import AuthProvider from '../context/auth-context';
 
 const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700'],
+  weight: ['300', '400', '500', '600', '700'],
   variable: '--font-sans',
 });
 

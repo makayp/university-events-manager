@@ -8,7 +8,7 @@ export default function LogoutButton() {
   return (
     <Button
       variant='link'
-      className='p-0 bg-none hover:bg-none focus-visible:bg-none focus:bg-none'
+      className='p-0 bg-none  hover:no-underline'
       onClick={async () => {
         await logout();
       }}
