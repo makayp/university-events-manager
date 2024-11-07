@@ -5,7 +5,7 @@ import { AdjustmentsHorizontalIcon } from '@heroicons/react/20/solid';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 export default async function Page() {
-  const events = await getEvents(3);
+  const events = await getEvents(6);
 
   return (
     <div className='py-2 md:py-7'>

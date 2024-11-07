@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { SignInSchema } from './zod';
 
 import { signIn, signOut } from '@/auth';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { AuthError } from 'next-auth';
 
 export async function login(values: z.infer<typeof SignInSchema>) {
@@ -47,15 +47,20 @@ export async function getEvents(limit: number) {
 }
 
 export async function getEventById(id: string) {
+  console.log('id', id);
   let event;
+  let res;
   try {
-    const res = await fetch(`http://localhost:8000/api/events/${id}`);
+    res = await fetch(`http://localhost:8000/api/events/${id}`);
 
     event = await res.json();
+    console.log(res.status);
   } catch (error) {
     console.log(error);
     throw new Error('Failed to fetch event data');
   }
+
+  if (res.status == 404) notFound();
 
   return event;
 }

@@ -11,7 +11,7 @@ export default function Header() {
     <header className='flex items-center justify-between gap-5 lg:gap-20 px-3 sm:px-5 lg:px-14 xl:px-20 py-2.5 bg-background border-b h-[55px] sm:h-[70px]'>
       <div>
         <Link href='/'>
-          <h1 className='text-2xl font-medium'>Logo</h1>
+          <h1 className='text-xl font-medium'>EventHub</h1>
         </Link>
       </div>
 

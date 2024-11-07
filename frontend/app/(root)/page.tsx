@@ -16,6 +16,7 @@ export default async function Home() {
           <Image
             src={heroImage}
             fill
+            priority
             alt='hero image'
             className='object-cover object-center [mask-image:linear-gradient(to_bottom,black_20%,transparent)] z-0'
           />

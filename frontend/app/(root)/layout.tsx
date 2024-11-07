@@ -1,3 +1,4 @@
+import Footer from '@/components/footer/footer';
 import Header from '@/components/header/header';
 
 export default function Layout({
@@ -11,6 +12,7 @@ export default function Layout({
       <main className=''>
         <div className='w-full'>{children}</div>
       </main>
+      <Footer />
     </>
   );
 }

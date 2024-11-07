@@ -19,7 +19,7 @@ export default function MobileMenu() {
         </SheetTrigger>
         <SheetContent className='flex flex-col gap-12 sm:hidden'>
           <SheetHeader>
-            <SheetTitle className='text-left'>Events</SheetTitle>
+            <SheetTitle className='text-left'>EventHub</SheetTitle>
             <SheetDescription></SheetDescription>
           </SheetHeader>
           <NavLinks />
