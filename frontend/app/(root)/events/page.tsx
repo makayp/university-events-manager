@@ -31,7 +31,7 @@ export default async function Page() {
         </div>
 
         <div className='container'>
-          <EventsCollection events={events} />
+          <EventsCollection events={events} paginate />
         </div>
       </div>
     </div>

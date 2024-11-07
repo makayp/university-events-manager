@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default async function Card({ event }: { event: EventData }) {
   const organiser = await getEventOrganiser(event.organiser);
   return (
-    <div className='group relative flex min-h-[350px] min-w-[320px] w-full max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg md:min-h-[400px] mx-auto'>
+    <div className='group relative flex min-h-[380px] w-full max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg md:min-h-[400px]'>
       <Link
         href={`/events/${event.id}`}
         style={{ backgroundImage: `url(${event.image})` }}

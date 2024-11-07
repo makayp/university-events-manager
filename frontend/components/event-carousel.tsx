@@ -13,7 +13,7 @@ export default async function EventCarousel() {
   return (
     <Carousel
       opts={{
-        align: 'end',
+        align: 'start',
       }}
       className='w-full'
     >
@@ -32,23 +32,19 @@ export default async function EventCarousel() {
 
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
-export interface Artwork {
-  artist: string;
-  art: string;
-}
-
-export async function EventSlider() {
+export async function EventSlider({ className }: { className?: string }) {
   const events: EventData[] = await getEvents(6);
   return (
-    <ScrollArea>
+    <ScrollArea className={className}>
       <div className='flex w-full gap-5'>
         {events.map((event) => (
-          <figure key={event.id}>
+          <figure key={event.id} className='flex-none w-[320px]'>
             <div className='w-full py-5 px-1'>
               <Card event={event} />
             </div>
           </figure>
         ))}
+        <div className='w-5'></div>
       </div>
       <ScrollBar orientation='horizontal' className='opacity-80' />
     </ScrollArea>
