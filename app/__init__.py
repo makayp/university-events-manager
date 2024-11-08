@@ -24,10 +24,7 @@ def create_app(config_name=None):
         from app import models
         from app.routes.auth_routes import auth_bp
         from app.routes.event_routes import event_bp
-        from app.routes.main_routes import main_bp
 
         app.register_blueprint(auth_bp)
         app.register_blueprint(event_bp)
-        app.register_blueprint(main_bp)
-
     return app

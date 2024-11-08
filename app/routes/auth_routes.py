@@ -4,6 +4,7 @@ from app.models import User, BlacklistedToken
 from datetime import timedelta, datetime, timezone
 from functools import wraps
 import re, jwt, os
+from sqlalchemy.exc import IntegrityError
 
 auth_bp = Blueprint('auth', __name__, url_prefix="/api/auth/")
 
@@ -114,6 +115,7 @@ def register():
     password = data.get('password')
     first_name = data.get('firstName')
     last_name = data.get('lastName')
+    image_url = data.get("image_url")
 
     if not email or not is_valid_email(email):
         return jsonify({
@@ -154,6 +156,7 @@ def register():
         password=password,
         first_name=first_name,
         last_name=last_name,
+        image_url=image_url
     )
 
     db.session.add(new_user)
@@ -200,3 +203,76 @@ def delete_account(user):
     db.session.commit()
 
     return jsonify({"success": True, "message": "User account deleted successfully."}), 200
+
+@auth_bp.route('/update_user_info', methods=['PUT'])
+@jwt_required
+def update(user):
+    try:
+        data = request.get_json()
+
+        user.first_name = data.get("first_name", user.first_name)
+        user.last_name = data.get("last_name", user.last_name)
+        user.image_url = data.get("image_url", user.image_url)
+
+        db.session.commit()
+
+    except IntegrityError as e:
+        db.session.rollback()
+        return jsonify({
+            "success": False,
+            "message": "An error occurred while updating user info."
+        }), 500
+
+@auth_bp.route('/get_user', methods=['GET'])
+@jwt_required
+def update_user_info(user):
+    return jsonify({
+        "success": True,
+        "user_info": {
+                "user_id": user.id,
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "image_url": user.image_url
+            },
+        "message": "Success."
+    }), 200
+
+@auth_bp.route('/change_password', methods=['PUT'])
+@jwt_required
+def change_password(user):
+    try:
+        data = request.get_json()
+
+        email = data.get('email')
+        password = data.get('password')
+        new_password = data.get('new_password')
+
+        if not email or not is_valid_email(email):
+            return jsonify({
+                "success": False,
+                "message": "Invalid email format. Please provide a valid email address."
+            }), 400
+        normalized_email = normalize_email(email)[0]
+
+        if not password or not is_valid_password(password):
+            return jsonify({
+                "success": False,
+                "message": f"Invalid password. It must contain at least {PASSWORD_LENGTH} characters, including 1 uppercase, 1 lowercase, 1 digit, and 1 special character '!, @, #, $, %, ^, &, *, (, )'"
+            }), 400
+        
+        if User.checkpassword(email=normalized_email, password=password):
+            if not new_password or not is_valid_password(new_password):
+                return jsonify({
+                    "success": False,
+                    "message": f"Invalid password. It must contain at least {PASSWORD_LENGTH} characters, including 1 uppercase, 1 lowercase, 1 digit, and 1 special character '!, @, #, $, %, ^, &, *, (, )'"
+                }), 400
+            user.update_password(new_password)
+            db.session.commit()
+        return jsonify({"success": True, "message": "Password updated successfully."}), 200
+    except IntegrityError as e:
+        db.session.rollback()
+        return jsonify({
+            "success": False,
+            "message": "An error occurred while changing the password."
+        }), 500

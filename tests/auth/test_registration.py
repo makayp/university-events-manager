@@ -5,7 +5,7 @@ import random, string, json
 from tests.resources import *
 
 def test_registration_success(client):
-    response = client.post('/auth/register', 
+    response = client.post('/api/auth/register', 
         json={
             "email": "User+tag@mail.com",
             "password": "1a!B1234",
@@ -25,7 +25,7 @@ def test_registration_success(client):
     assert reg_user.email == "user@mail.com"
     assert reg_user.email_ext == "tag"
 
-    response = client.post('/auth/register', 
+    response = client.post('/api/auth/register', 
         json={
             "email": "User+test@mail.com",
             "password": "1a!B1234",
@@ -35,7 +35,7 @@ def test_registration_success(client):
     print(response.get_json())
     assert response.status_code == 409
 
-    response = client.post('/auth/register', 
+    response = client.post('/api/auth/register', 
         json={
             "email": "user@mail.com",
             "password": "1a!B1234",
@@ -45,7 +45,7 @@ def test_registration_success(client):
     print(response.get_json())
     assert response.status_code == 409
 
-    response = client.post('/auth/register', 
+    response = client.post('/api/auth/register', 
         json={
             "email": "uSer+letmein@mail.com",
             "password": "1a!B1234absdfasdf",
@@ -64,7 +64,7 @@ def test_stress_email_validation(client):
         for k, v in data.items():
             print(k)
             print(v)
-            response = client.post('/auth/register', json=v["data"])
+            response = client.post('/api/auth/register', json=v["data"])
             print(response.get_json())
             assert response.status_code == v["status_code"]
     except FileNotFoundError:
@@ -83,7 +83,7 @@ def test_stress_password_validation(client):
         for k, v in data.items():
             print(k)
             print(v)
-            response = client.post('/auth/register', json=v["data"])
+            response = client.post('/api/auth/register', json=v["data"])
             print(response.get_json())
             assert response.status_code == v["status_code"]
     except FileNotFoundError:
@@ -102,7 +102,7 @@ def test_stress_name_validation(client):
         for k, v in data.items():
             print(k)
             print(v)
-            response = client.post('/auth/register', json=v["data"])
+            response = client.post('/api/auth/register', json=v["data"])
             print(response.get_json())
             assert response.status_code == v["status_code"]
     except FileNotFoundError:

@@ -4,7 +4,8 @@
             "email": "user1@mail.com",
             "password": "1!aB1234",
             "firstName": "John",
-            "lastName": "Smith"
+            "lastName": "Smith",
+            "image_url": ""
         },
         "status_code": 201
     },
@@ -13,7 +14,8 @@
             "email": "user2@mail.com",
             "password": "1!aB1234",
             "firstName": "",
-            "lastName": "Smith"
+            "lastName": "Smith",
+            "image_url": ""
         },
         "status_code": 400
     },
@@ -22,7 +24,8 @@
             "email": "user3@mail.com",
             "password": "1!aB1234",
             "firstName": "John",
-            "lastName": ""
+            "lastName": "",
+            "image_url": ""
         },
         "status_code": 400
     },
@@ -31,7 +34,8 @@
             "email": "user4@mail.com",
             "password": "1!aB1234",
             "firstName": "",
-            "lastName": ""
+            "lastName": "",
+            "image_url": ""
         },
         "status_code": 400
     }

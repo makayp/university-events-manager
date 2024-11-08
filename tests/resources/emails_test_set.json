@@ -4,7 +4,8 @@
             "email": "user1@mail.com",
             "password": "1!aB1234",
             "firstName": "John",
-            "lastName": "Smith"
+            "lastName": "Smith",
+            "image_url": ""
         },
         "status_code": 201
     },
@@ -13,7 +14,8 @@
             "email": "user2+tag@mail.com",
             "password": "1!aB1234",
             "firstName": "John",
-            "lastName": "Smith"
+            "lastName": "Smith",
+            "image_url": ""
         },
         "status_code": 201
     },
@@ -22,7 +24,8 @@
             "email": "user@mail.",
             "password": "1!aB1234",
             "firstName": "John",
-            "lastName": "Smith"
+            "lastName": "Smith",
+            "image_url": ""
         },
         "status_code": 400
     },
@@ -31,7 +34,8 @@
             "email": "user@.com",
             "password": "1!aB1234",
             "firstName": "John",
-            "lastName": "Smith"
+            "lastName": "Smith",
+            "image_url": ""
         },
         "status_code": 400
     },
@@ -40,7 +44,8 @@
             "email": "user@.",
             "password": "1!aB1234",
             "firstName": "John",
-            "lastName": "Smith"
+            "lastName": "Smith",
+            "image_url": ""
         },
         "status_code": 400
     },
@@ -49,7 +54,8 @@
             "email": "user@mailcom",
             "password": "1!aB1234",
             "firstName": "John",
-            "lastName": "Smith"
+            "lastName": "Smith",
+            "image_url": ""
         },
         "status_code": 400
     },
@@ -58,7 +64,8 @@
             "email": "user@",
             "password": "1!aB1234",
             "firstName": "John",
-            "lastName": "Smith"
+            "lastName": "Smith",
+            "image_url": ""
         },
         "status_code": 400
     },
@@ -67,7 +74,8 @@
             "email": "usermail.com",
             "password": "1!aB1234",
             "firstName": "John",
-            "lastName": "Smith"
+            "lastName": "Smith",
+            "image_url": ""
         },
         "status_code": 400
     },
@@ -76,7 +84,8 @@
             "email": "@mail.com",
             "password": "1!aB1234",
             "firstName": "John",
-            "lastName": "Smith"
+            "lastName": "Smith",
+            "image_url": ""
         },
         "status_code": 400
     },
@@ -85,7 +94,8 @@
             "email": "",
             "password": "1!aB1234",
             "firstName": "John",
-            "lastName": "Smithh"
+            "lastName": "Smithh",
+            "image_url": ""
         },
         "status_code": 400
     },
@@ -94,7 +104,8 @@
             "email": ".com",
             "password": "1!aB1234",
             "firstName": "John",
-            "lastName": "Smith"
+            "lastName": "Smith",
+            "image_url": ""
         },
         "status_code": 400
     }
