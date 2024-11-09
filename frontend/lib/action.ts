@@ -1,13 +1,55 @@
 'use server';
 
 import { z } from 'zod';
-import { SignInSchema } from './zod';
+import { EventFormSchema, SignInSchema, SignUpSchema } from './zod';
 
-import { signIn, signOut } from '@/auth';
+import { auth, signIn, signOut } from '@/auth';
 import { notFound, redirect } from 'next/navigation';
 import { AuthError } from 'next-auth';
+import { EventData } from './declaration';
 
-export async function login(values: z.infer<typeof SignInSchema>) {
+export async function signup(userData: z.infer<typeof SignUpSchema>) {
+  let isAccountCreated = false;
+  let credentials = null;
+  let data;
+  try {
+    const res = await fetch(`${process.env.SERVER_ENDPOINT}/auth/register`, {
+      method: 'POST',
+      body: JSON.stringify({
+        ...userData,
+        firstName: userData.first_name,
+        lastName: userData.last_name,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    data = await res.json();
+
+    if (res.status == 409) {
+      console.log(data);
+      return { error: 'Email already exists' };
+    }
+
+    if (!res.ok) throw new Error('Something went wrong');
+
+    if (res.ok) {
+      credentials = userData;
+      isAccountCreated = true;
+    }
+  } catch (error) {
+    console.log(error);
+    return { error: 'Something went wrong. Try again' };
+  }
+
+  if (isAccountCreated && credentials) await login(credentials, '/dashboard');
+}
+
+export async function login(
+  values: z.infer<typeof SignInSchema>,
+  redirectUrl?: string
+) {
   let data;
   try {
     data = await signIn('credentials', { ...values, redirect: false });
@@ -22,6 +64,8 @@ export async function login(values: z.infer<typeof SignInSchema>) {
     }
   }
 
+  if (redirectUrl) redirect(redirectUrl);
+
   const url = new URL(data);
   const callback = url.searchParams.get('callbackUrl');
 
@@ -33,17 +77,24 @@ export async function logout() {
 }
 
 export async function getEvents(limit: number) {
-  let events;
-  try {
-    const res = await fetch('http:/localhost:8000/api/events');
+  let data;
 
-    events = await res.json();
+  try {
+    const res = await fetch(
+      `${process.env.SERVER_ENDPOINT}/events/upcoming?per_page=${limit}`
+    );
+
+    data = await res.json();
+
+    console.log(data);
+
+    if (res.ok) return data.events;
   } catch (error) {
     console.log(error);
-    throw new Error('Failed to fetch latest events');
+    // return { error: { message: 'Something went wrong' } };
   }
 
-  return events.slice(0, limit);
+  return [];
 }
 
 export async function getEventById(id: string) {
@@ -65,16 +116,40 @@ export async function getEventById(id: string) {
   return event;
 }
 
-export async function getEventOrganiser(id: string) {
-  let data;
-  try {
-    const res = await fetch(`http://localhost:8000/api/users/${id}`);
+export async function getUser(token?: string) {
+  let session;
 
-    data = await res.json();
-  } catch (error) {
-    console.log(error);
-    throw new Error('Failed to fetch event data.');
+  if (!token) {
+    session = await auth();
+    token = session?.user.accessToken!;
   }
 
-  return data;
+  try {
+    const res = await fetch(`${process.env.SERVER_ENDPOINT}/auth/get_user`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const user = await res.json();
+
+    if (res.ok) {
+      return user.user_info;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  return null;
+}
+
+export async function getEventOrganiser(organizerId: string) {}
+
+export async function createEvent(event: z.infer<typeof EventFormSchema>) {
+  const session = await auth();
+
+  if (!session) redirect('/login');
+
+  const res = await fetch(`${process.env.SERVER_ENDPOINT}/events/create}`);
 }

@@ -1,6 +1,9 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
+import { decodeJwt } from 'jose';
+import { DBUser } from './lib/declaration';
+import { getUser } from './lib/action';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -18,26 +21,42 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
 
       async authorize(credentials) {
-        const testUser = {
-          id: '12345',
-          first_name: 'Jane',
-          last_name: 'Doe',
-          email: 'jane@email.com',
-          image:
-            'https://res.cloudinary.com/denbrnoaj/image/upload/v1721705266/nextjs-course-mutations/hyot7deg8hk5xfwdbz6w.jpg',
-          password: 'jane123',
-          accessToken: 'test',
-        };
+        const { email, password } = credentials;
 
-        if (
-          credentials?.email !== testUser.email ||
-          credentials?.password !== testUser.password
-        )
-          return null;
+        try {
+          const res = await fetch(`${process.env.SERVER_ENDPOINT}/auth/login`, {
+            method: 'POST',
+            body: JSON.stringify({
+              email,
+              password,
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
 
-        const { password, ...user } = testUser;
+          const data = await res.json();
 
-        return user;
+          if (res.status == 401) {
+            console.log(data);
+            return null;
+          }
+
+          if (res.ok && data.token) {
+            const token = data.token;
+
+            const user = await getUser(token);
+
+            if (!user) return null;
+
+            return { ...user, accessToken: token };
+          }
+        } catch (error) {
+          console.log(error);
+          throw new Error('error');
+        }
+
+        return null;
       },
     }),
   ],

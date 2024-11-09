@@ -24,8 +24,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import Warning from '@/public/icons/warning.svg';
 
 import { SignUpSchema } from '@/lib/zod';
+import { signup } from '@/lib/action';
 
 export function SignupForm() {
   const form = useForm<z.infer<typeof SignUpSchema>>({
@@ -38,8 +40,11 @@ export function SignupForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof SignUpSchema>) {
+  async function onSubmit(values: z.infer<typeof SignUpSchema>) {
     console.log(values);
+    const data = await signup(values);
+
+    if (data?.error) form.setError('root', { message: data.error });
   }
 
   return (
@@ -117,6 +122,12 @@ export function SignupForm() {
                 </FormItem>
               )}
             />
+            {form.formState.errors.root && (
+              <FormMessage className='flex items-center gap-1'>
+                <Warning className='size-[1.5rem] text-destructive' />{' '}
+                {form.formState.errors.root.message}
+              </FormMessage>
+            )}
 
             <Button
               type='submit'

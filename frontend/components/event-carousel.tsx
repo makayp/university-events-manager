@@ -32,8 +32,19 @@ export default async function EventCarousel() {
 
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
-export async function EventSlider({ className }: { className?: string }) {
-  const events: EventData[] = await getEvents(6);
+export async function EventSlider({
+  events,
+  className,
+}: {
+  events: EventData[];
+  className?: string;
+}) {
+  if (events.length < 1)
+    return (
+      <div className='flex items-center  -center justify-center h-36'>
+        <p>No events currently, check back later.</p>
+      </div>
+    );
   return (
     <ScrollArea className={className}>
       <div className='flex w-full gap-5'>

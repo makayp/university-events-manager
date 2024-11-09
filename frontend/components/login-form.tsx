@@ -77,12 +77,12 @@ export function LoginForm() {
                     <div className='grid gap-2'>
                       <div className='flex items-center'>
                         <FormLabel>Password</FormLabel>
-                        <Link
+                        {/* <Link
                           href='#'
                           className='ml-auto inline-block text-sm underline'
                         >
                           Forgot your password?
-                        </Link>
+                        </Link> */}
                       </div>
                       <Input
                         type='password'

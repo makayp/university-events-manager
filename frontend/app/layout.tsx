@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Poppins } from 'next/font/google';
 import clsx from 'clsx';
-import SessionProvider from '@/context/session-provider';
 import AuthProvider from '../context/auth-context';
 
 const poppins = Poppins({
@@ -12,8 +11,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'University Events Manager',
-  description: 'An event manager for a university',
+  title: { default: 'EventHub', template: '%s | EventHub' },
+  description: 'An event management web application for a university',
 };
 
 export default function RootLayout({
@@ -29,9 +28,7 @@ export default function RootLayout({
       />
 
       <body className={clsx('font-sans antialiased', poppins.variable)}>
-        <SessionProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </SessionProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

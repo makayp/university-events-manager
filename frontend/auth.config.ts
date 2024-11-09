@@ -32,8 +32,14 @@ export const authConfig = {
     async jwt({ token, user }) {
       if (user) {
         token.user = user;
-        token.exp = decodeJwt(user.accessToken).exp;
+        const expiry = Math.floor(
+          new Date(decodeJwt(user.accessToken).expiry as number).getTime() /
+            1000
+        );
+
+        token.exp = expiry;
       }
+
       return token;
     },
     async session({ session, token }) {

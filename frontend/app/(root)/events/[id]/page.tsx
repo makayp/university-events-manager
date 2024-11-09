@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import previewImage from '@/public/images/default-fallback-image.png';
+import SessionProvider from '@/context/session-provider';
 
 export default async function Page({
   params,
@@ -96,7 +97,7 @@ export default async function Page({
               <Button size='lg' className='rounded-full md:w-[150px] flex-1'>
                 Register
               </Button>{' '}
-              <EventDropdown eventId={id} />
+              <EventDropdown eventId={id} eventOrganiser={event.organiser} />
             </div>
           </div>
 

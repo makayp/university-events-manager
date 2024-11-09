@@ -1,5 +1,6 @@
 import { EventSlider } from '@/components/event-carousel';
 import EventsCollection from '@/components/events-collection';
+import EventsList from '@/components/events-list';
 import { Button } from '@/components/ui/button';
 import { getEvents } from '@/lib/action';
 import heroImage from '@/public/images/hero-image.jpg';
@@ -8,7 +9,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default async function Home() {
-  const events = await getEvents(6);
   return (
     <main>
       <section className='md:container md:mt-6 min-h-[500px] md:min-h-[400px] lg:min-h-[450px] flex flex-col'>
@@ -37,7 +37,7 @@ export default async function Home() {
                 <Link href='/events'>
                   <Button
                     size='lg'
-                    className='rounded-full mt-4 px-8 h-12 lg:px-12 z-50 relative bg-primary/80'
+                    className='rounded-full mt-4 px-8 h-12 lg:px-12 z-50 relative bg-primary'
                   >
                     Explore now
                   </Button>
@@ -60,16 +60,13 @@ export default async function Home() {
             </Link>
           </div>
           <div>
-            <EventsCollection events={events} className='hidden md:block' />
-            <EventSlider className='md:hidden' />
+            <div className='hidden md:block'>
+              <EventsList type='collection' numEvents={6} />
+            </div>
+            <div className='md:hidden'>
+              <EventsList type='slider' numEvents={6} />
+            </div>
           </div>
-        </div>
-        <div className='mt-10 md:flex items-center justify-center hidden '>
-          <Link href='/events'>
-            <Button size='lg' className='rounded-full px-10 h-12'>
-              View more <ArrowRightIcon />
-            </Button>
-          </Link>
         </div>
       </section>
     </main>

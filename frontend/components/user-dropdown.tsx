@@ -7,29 +7,20 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import LogoutButton from './auth/logout-button';
-import {
-  AdjustmentsHorizontalIcon,
-  ClockIcon,
-  TicketIcon,
-  UserIcon,
-} from '@heroicons/react/24/outline';
+import { ClockIcon, TicketIcon, UserIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import UserAvatar from './user-avatar';
 
-const profileLinks = [
+export const profileLinks = [
   { name: 'Dashboard', href: '/dashboard', icon: UserIcon },
-  { name: 'Profile', href: '/dashboard/profile', icon: UserIcon },
   { name: 'My events', href: '/dashboard/my-events', icon: TicketIcon },
   {
     name: 'RSVP Events',
     href: '/dashboard/rsvps',
     icon: ClockIcon,
   },
-  {
-    name: 'Edit profile',
-    href: '/dashboard/profile',
-    icon: AdjustmentsHorizontalIcon,
-  },
+
+  { name: 'Account', href: '/dashboard/account', icon: UserIcon },
 ];
 
 export default function UserDropdown({ imageSrc }: { imageSrc: string }) {
