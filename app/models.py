@@ -83,7 +83,7 @@ class Event(db.Model):
     __tablename__ = 'event'
     
     id = Column(Integer, primary_key=True, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id', ondelete='SET NULL'), nullable=True)
+    user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'), nullable=True)
     event_name = Column(Text, nullable=False)
     description = Column(Text, nullable=True)
     start_time = Column(String, nullable=False)  # ISO format text for SQLite

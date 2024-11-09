@@ -15,29 +15,29 @@ MAX_PER_PAGE = 50
 
 @event_bp.route('/upcoming', methods=['GET'])
 def get_upcoming_events():
-    
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', DEFAULT_PER_PAGE, type=int)
     per_page = min(per_page, MAX_PER_PAGE)
-
     if page < 1 or per_page < 1:
         return jsonify({
             "success": False,
             "message": "per_page and page must be positive integers."
         }), 400
-
-    # Filter events by start_time > current time directly in the query
+    
     current_time = datetime.now(timezone.utc)
     events_query = (
-        db.session.query(Event)
-        .filter(Event.start_time > current_time)
+    Event.query
+        .filter(Event.start_time > current_time)  # Use .filter() for complex conditions
         .order_by(Event.start_time.asc())
     )
+
 
     total_events = events_query.count()
     events = events_query.offset((page - 1) * per_page).limit(per_page).all()
 
     total_pages = ceil(total_events / per_page)
+
+
 
     upcoming_events = []
 

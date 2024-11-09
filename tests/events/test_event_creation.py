@@ -61,6 +61,7 @@ def test_event_creation(client):
         '/api/events/upcoming')
     
     data = response.get_json()
+    print("ogogog")
     print(data)
 
     response = client.get(
