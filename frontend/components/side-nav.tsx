@@ -1,22 +1,48 @@
+'use client';
+
 import Link from 'next/link';
-import DashboardLinks from './dashboard-links';
+import NavLinks from './header/nav-links';
+import LogoutButton from './auth/logout-button';
+import { Button } from './ui/button';
+import { profileLinks } from './user-dropdown';
+import clsx from 'clsx';
+import { usePathname } from 'next/navigation';
+
+const links = profileLinks;
 
 export default function SideNav() {
+  const pathname = usePathname();
   return (
-    <div className='bg-white flex h-full flex-col border-r border-gray-200'>
+    <div className='flex h-full flex-col px-3 py-4 md:px-2'>
       <Link
-        className='flex h-20 items-end justify-start bg-primary p-4 md:h-40'
+        className='mb-2 flex h-20 items-end justify-start rounded-md bg-blue-600 p-4 md:h-40'
         href='/'
       >
         <div className='w-32 text-white md:w-40'>
-          <h1 className='text-2xl font-semibold'>EventHub</h1>
+          <h1 className='text-xl font-medium'>EventHub</h1>
         </div>
       </Link>
-      <div className='md:mt-5 flex grow flex-row justify-between md:flex-col rounded-md overflow-hidden'>
-        <DashboardLinks />
+      <div className='flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2'>
+        {links.map((link) => {
+          const LinkIcon = link.icon;
+          return (
+            <Link
+              key={link.name}
+              href={link.href}
+              className={clsx(
+                'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
+                { 'bg-sky-100 text-blue-600': pathname === link.href }
+              )}
+            >
+              <LinkIcon className='w-6' />
+              <p className='hidden md:block'>{link.name}</p>
+            </Link>
+          );
+        })}
+        <div className='hidden h-auto w-full grow rounded-md bg-gray-50 md:block'></div>
 
-        <div className='hidden h-auto w-full grow rounded-md md:block'></div>
-        {/* <Button>Logout</Button> */}
+        {/* <LogoutButton />
+        <Button>Logout</Button> */}
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ export default function ConfirmDialog({
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete your
-            event's data.
+            event&apos;s data.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

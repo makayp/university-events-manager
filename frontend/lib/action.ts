@@ -199,7 +199,7 @@ export async function createEvent(newEvent: z.infer<typeof EventFormSchema>) {
     };
   }
 
-  return { success: 'Event updated successfully', newEventId: data.event };
+  return { success: 'Event created successfully', newEventId: data.event };
 }
 
 export async function updateEvent(
@@ -235,8 +235,6 @@ export async function updateEvent(
 
   event.image_url = imageUrl || event.image_url;
 
-  let data;
-
   try {
     const res = await fetch(
       `${process.env.SERVER_ENDPOINT}/events/${eventId}/update`,
@@ -254,15 +252,14 @@ export async function updateEvent(
       return { error: `Server error: ${res.status}` };
     }
 
-    data = await res.json();
+    await res.json();
+    return { success: 'Event updated successfully' };
   } catch (error) {
     console.error('Network error:', error);
     return {
       error: 'Server error. Please try again later.',
     };
   }
-
-  return { success: 'Event updated successfully' };
 }
 
 export async function deleteEvent(eventId: string) {
@@ -292,5 +289,127 @@ export async function deleteEvent(eventId: string) {
   } catch (error) {
     console.log(error);
     return { error: 'Server error. Try again' };
+  }
+}
+
+export async function getRegisteredEvents() {
+  const session = await auth();
+
+  if (!session) {
+    console.log('no session');
+    redirect('/login');
+  }
+
+  try {
+    const res = await fetch(
+      `${process.env.SERVER_ENDPOINT}/events/registered`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${session.user.accessToken}`,
+        },
+      }
+    );
+
+    const data = await res.json();
+
+    if (res.status == 404) return [];
+
+    if (!res.ok) throw new Error('Something went wrong. Please try again');
+
+    return data.events;
+  } catch (error) {
+    console.log(error);
+    throw new Error('Server error. Please try again later.');
+  }
+}
+
+export async function checkIsRegistered({ eventId }: { eventId: string }) {
+  const session = await auth();
+
+  if (!session) {
+    console.log('no session');
+    redirect(`/login?callbackUrl=/events/${eventId}`);
+  }
+
+  const registeredEvents: EventData[] = await getRegisteredEvents();
+  const isRegistered = registeredEvents.some((event) => event.id == eventId);
+
+  return isRegistered;
+}
+
+export async function registerForEvent({ eventId }: { eventId: string }) {
+  const session = await auth();
+
+  if (!session) {
+    console.log('no session');
+    redirect(`/login?callbackUrl=/events/${eventId}`);
+  }
+
+  try {
+    const res = await fetch(
+      `${process.env.SERVER_ENDPOINT}/events/${eventId}/register`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session.user.accessToken}`,
+        },
+      }
+    );
+
+    const data = await res.json();
+
+    console.log(res.status, data);
+
+    if (res.status == 409) {
+      return { error: 'You already registered for this event' };
+    }
+
+    if (!res.ok) return { error: 'Something went wrong. Please try again' };
+
+    return { success: 'You successfully registered for the event' };
+  } catch (error) {
+    console.log(error);
+    return {
+      error: 'Server error. Please try again later.',
+    };
+  }
+}
+
+export async function unregisterEvent({ eventId }: { eventId: string }) {
+  const session = await auth();
+
+  if (!session) {
+    console.log('no session');
+    redirect(`/login?callbackUrl=/events/${eventId}`);
+  }
+
+  try {
+    const res = await fetch(
+      `${process.env.SERVER_ENDPOINT}/events/${eventId}/unregister`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${session.user.accessToken}`,
+        },
+      }
+    );
+
+    const data = await res.json();
+
+    console.log(res.status, data);
+
+    if (res.status == 404) {
+      return { error: 'You are not registered for this event' };
+    }
+
+    if (!res.ok) return { error: 'Something went wrong. Please try again' };
+
+    return { success: 'You successfully unregistered from the event' };
+  } catch (error) {
+    console.log(error);
+    return {
+      error: 'Server error. Please try again later.',
+    };
   }
 }

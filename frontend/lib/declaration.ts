@@ -30,11 +30,11 @@ export interface EventUserInfo {
   first_name: string;
   last_name: string;
   image_url: string | null;
-  user_id: number;
+  user_id: string;
 }
 
 export interface EventData {
-  id: number;
+  id: string;
   event_name: string;
   description: string;
   start_time: string;

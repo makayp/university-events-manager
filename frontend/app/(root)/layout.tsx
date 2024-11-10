@@ -10,11 +10,13 @@ export default function Layout({
   return (
     <>
       <SessionProvider>
-        <Header />
-        <main className='min-h-dvh'>
-          <div className='w-full'>{children}</div>
-        </main>
-        <Footer />
+        <div className='h-dvh flex flex-col'>
+          <Header />
+          <main className='flex-1'>
+            <div className='w-full'>{children}</div>
+          </main>
+          <Footer />
+        </div>
       </SessionProvider>
     </>
   );

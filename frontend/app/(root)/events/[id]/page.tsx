@@ -18,6 +18,9 @@ import { notFound } from 'next/navigation';
 
 import previewImage from '@/public/images/default-fallback-image.png';
 import EventsList from '@/components/events-list';
+import EventActionButton from '@/components/event-action-button';
+import { Suspense } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default async function Page({
   params,
@@ -93,9 +96,18 @@ export default async function Page({
               </div>
             </div>
             <div className='flex gap-2'>
-              <Button size='lg' className='rounded-full md:w-[150px] flex-1'>
-                Register
-              </Button>{' '}
+              <div className='flex-1'>
+                <Suspense
+                  fallback={
+                    <Skeleton className='rounded-full md:w-[150px] h-10' />
+                  }
+                >
+                  <EventActionButton
+                    eventId={id}
+                    organiserId={organiser.user_id}
+                  />
+                </Suspense>
+              </div>
               <EventDropdown eventId={id} eventOrganiser={organiser} />
             </div>
           </div>
