@@ -42,12 +42,7 @@ export default function ShareDialog({
             <Label htmlFor='link' className='sr-only'>
               Link
             </Label>
-            <Input
-              id='link'
-              // defaultValue='https://ui.shadcn.com/docs/installation'
-              value={url || pageUrl}
-              readOnly
-            />
+            <Input id='link' value={url || pageUrl} readOnly />
           </div>
           <Button
             type='submit'

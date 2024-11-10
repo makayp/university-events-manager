@@ -3,6 +3,7 @@ import './globals.css';
 import { Poppins } from 'next/font/google';
 import clsx from 'clsx';
 import AuthProvider from '../context/auth-context';
+import { Toaster } from '@/components/ui/toaster';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -29,6 +30,7 @@ export default function RootLayout({
 
       <body className={clsx('font-sans antialiased', poppins.variable)}>
         <AuthProvider>{children}</AuthProvider>
+        <Toaster />
       </body>
     </html>
   );

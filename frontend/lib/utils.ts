@@ -76,5 +76,6 @@ export function truncateText(text: string, length: number) {
 }
 
 export function copyText(text: string) {
+  if (!navigator.clipboard) return;
   navigator.clipboard.writeText(text);
 }

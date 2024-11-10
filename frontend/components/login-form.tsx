@@ -28,13 +28,17 @@ import { Input } from '@/components/ui/input';
 import Warning from '@/public/icons/warning.svg';
 import { SignInSchema } from '@/lib/zod';
 import { login } from '@/lib/action';
+import { Eye } from 'lucide-react';
+import { useState } from 'react';
 
 export function LoginForm() {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
   const form = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
-      email: 'jane@email.com',
-      password: 'jane123',
+      email: 'email@email.com',
+      password: 'Hello!23',
     },
   });
 
@@ -61,7 +65,11 @@ export function LoginForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder='Enter your email address' {...field} />
+                    <Input
+                      placeholder='Enter your email address'
+                      {...field}
+                      autoComplete='email'
+                    />
                   </FormControl>
                   <FormDescription>E.g email@brandonu.ca</FormDescription>
                   <FormMessage />
@@ -84,11 +92,20 @@ export function LoginForm() {
                           Forgot your password?
                         </Link> */}
                       </div>
-                      <Input
-                        type='password'
-                        placeholder='Enter password'
-                        {...field}
-                      />
+                      <div className='flex items-center relative'>
+                        <Input
+                          type={showPassword ? 'text' : 'password'}
+                          autoComplete='current-password'
+                          placeholder='Enter password'
+                          {...field}
+                        />
+                        <span
+                          className='absolute right-3 text-sm text-gray-500'
+                          onClick={() => setShowPassword((show) => !show)}
+                        >
+                          <Eye className='text-gray-400' />
+                        </span>
+                      </div>
                     </div>
                   </FormControl>
 
@@ -107,7 +124,18 @@ export function LoginForm() {
               type='submit'
               className='w-full bg-accent hover:bg-accent/90'
             >
-              Login
+              {form.formState.isSubmitting ? (
+                <div
+                  className='inline-block size-4 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-gray-100'
+                  role='status'
+                >
+                  <span className='!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]'>
+                    Loading...
+                  </span>
+                </div>
+              ) : (
+                'Login'
+              )}
             </Button>
           </form>
         </Form>

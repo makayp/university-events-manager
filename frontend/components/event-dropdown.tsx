@@ -16,24 +16,66 @@ import {
 } from '@heroicons/react/20/solid';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import ConfirmDialog from './confirm-dialog';
 import Share from './share-dialog';
 import { Button } from './ui/button';
+import { EventUserInfo } from '@/lib/declaration';
+import { AlertDialogAction } from './ui/alert-dialog';
+import { deleteEvent } from '@/lib/action';
+import Spinner from './spinner';
+import { usePathname, useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 export default function EventDropdown({
   eventId,
   eventOrganiser,
 }: {
   eventId: string;
-  eventOrganiser: string;
+  eventOrganiser: EventUserInfo;
 }) {
   const [isAlertDialogOpen, setAlertDialogOpen] = useState(false);
   const [isShareDialogOpen, setShareDialogOpen] = useState(false);
 
+  const [isPending, startTransition] = useTransition();
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const { toast } = useToast();
+
   const { data } = useSession();
 
-  const isEventOrganiser = data?.user.id == eventOrganiser;
+  const isEventOrganiser =
+    String(data?.user.user_id) == String(eventOrganiser.user_id);
+
+  async function handleClick() {
+    startTransition(async () => {
+      const response = await deleteEvent(eventId);
+
+      if (response.error) {
+        toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: response.error,
+        });
+      }
+      if (response.success) {
+        toast({
+          title: 'Success',
+          description: response.success,
+        });
+        setAlertDialogOpen(false);
+
+        const redirectTo =
+          pathname === `/events/${eventId}`
+            ? '/events'
+            : '/dashboard/my-events';
+
+        router.push(redirectTo);
+      }
+    });
+  }
 
   return (
     <>
@@ -41,7 +83,11 @@ export default function EventDropdown({
         action='Delete'
         isOpen={isAlertDialogOpen}
         setIsOpen={setAlertDialogOpen}
-      />
+      >
+        <Button disabled={isPending} className='min-w-24' onClick={handleClick}>
+          {isPending ? <Spinner type='small' /> : 'Delete'}
+        </Button>
+      </ConfirmDialog>
       <Share isOpen={isShareDialogOpen} setIsOpen={setShareDialogOpen} />
 
       <DropdownMenu>

@@ -25,24 +25,30 @@ import {
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { EventData } from '@/lib/declaration';
+import { createEvent, updateEvent } from '@/lib/action';
+import Warning from '@/public/icons/warning.svg';
+import { Toast } from './ui/toast';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 export default function EventForm({
   type,
   event,
+  eventId,
 }: {
-  type: string;
-  event?: EventData;
+  type: 'Update' | 'Create';
+  event?: z.infer<typeof EventFormSchema>;
+  eventId?: string;
 }) {
-  const [image, setImage] = useState<File | null>(null);
+  const [image, setImage] = useState<File | undefined>(undefined);
 
-  const initialValues = {
-    title: '',
+  const initialValues: z.infer<typeof EventFormSchema> = {
+    event_name: '',
     description: '',
-    image: '',
+    image_url: '',
     location: '',
-    startDateTime: new Date(),
-    endDateTime: new Date(),
+    start_time: new Date(),
+    end_time: new Date(),
     url: '',
   };
 
@@ -51,21 +57,58 @@ export default function EventForm({
     defaultValues: event || initialValues,
   });
 
-  function onSubmit(values: z.infer<typeof EventFormSchema>) {
-    console.log(values, image);
+  const { toast } = useToast();
+  const router = useRouter();
+
+  async function onSubmit(values: z.infer<typeof EventFormSchema>) {
+    const eventData = { ...values, image };
+
+    let response:
+      | { success?: string; error?: string; newEventId?: string }
+      | undefined;
+
+    if (type === 'Create') {
+      response = await createEvent(eventData);
+    }
+
+    if (type === 'Update' && eventId) {
+      response = await updateEvent(eventData, eventId);
+    }
+
+    if (response?.error) {
+      form.setError('root', {
+        message: response.error,
+      });
+
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: response.error,
+      });
+    }
+
+    if (response?.success) {
+      toast({
+        title: 'Success',
+        description: response.success,
+      });
+
+      const newEventId = response?.newEventId || eventId;
+
+      router.push(`/events/${newEventId}`);
+    }
   }
 
   return (
     <Form {...form}>
       <form
-        // id='eventForm'
         onSubmit={form.handleSubmit(onSubmit)}
         className='flex flex-col gap-5 relative'
       >
         <div className='flex flex-col gap-5 md:flex-row'>
           <FormField
             control={form.control}
-            name='title'
+            name='event_name'
             render={({ field }) => (
               <FormItem className='w-full'>
                 <FormControl>
@@ -101,7 +144,7 @@ export default function EventForm({
           />
           <FormField
             control={form.control}
-            name='image'
+            name='image_url'
             render={({ field }) => (
               <FormItem className='w-full'>
                 <FormControl>
@@ -144,7 +187,7 @@ export default function EventForm({
         <div className='flex flex-col gap-5 md:flex-row'>
           <FormField
             control={form.control}
-            name='startDateTime'
+            name='start_time'
             render={({ field }) => (
               <FormItem className='w-full'>
                 <FormControl>
@@ -155,8 +198,8 @@ export default function EventForm({
                       Start Date:
                     </p>
                     <DatePicker
-                      name='startDateTime'
-                      selected={field.value}
+                      name='start_time'
+                      selected={new Date(field.value)}
                       onChange={(date) => field.onChange(date)}
                       className='bg-transparent w-fulll text-[15px]'
                       showTimeSelect
@@ -174,7 +217,7 @@ export default function EventForm({
 
           <FormField
             control={form.control}
-            name='endDateTime'
+            name='end_time'
             render={({ field }) => (
               <FormItem className='w-full'>
                 <FormControl>
@@ -185,7 +228,7 @@ export default function EventForm({
                       End Date:
                     </p>
                     <DatePicker
-                      selected={field.value}
+                      selected={new Date(field.value)}
                       onChange={(date) => field.onChange(date)}
                       className='bg-transparent text-[15px]'
                       showTimeSelect
@@ -225,13 +268,31 @@ export default function EventForm({
           />
         </div>
 
+        {form.formState.errors.root && (
+          <FormMessage className='flex items-center gap-1'>
+            <Warning className='size-[1.5rem] text-destructive' />{' '}
+            {form.formState.errors.root.message}
+          </FormMessage>
+        )}
+
         <Button
           type='submit'
           size='lg'
           disabled={form.formState.isSubmitting}
           className='rounded-full h- w-fullj'
         >
-          {form.formState.isSubmitting ? 'Submitting' : `${type} Event`}
+          {form.formState.isSubmitting ? (
+            <div
+              className='inline-block size-4 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-gray-100'
+              role='status'
+            >
+              <span className='!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]'>
+                Loading...
+              </span>
+            </div>
+          ) : (
+            `${type} Event`
+          )}
         </Button>
       </form>
     </Form>

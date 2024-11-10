@@ -28,8 +28,12 @@ import Warning from '@/public/icons/warning.svg';
 
 import { SignUpSchema } from '@/lib/zod';
 import { signup } from '@/lib/action';
+import { useState } from 'react';
+import { Eye } from 'lucide-react';
 
 export function SignupForm() {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
@@ -37,6 +41,7 @@ export function SignupForm() {
       last_name: '',
       email: '',
       password: '',
+      confirm_password: '',
     },
   });
 
@@ -95,9 +100,13 @@ export function SignupForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder='Enter your email address' {...field} />
+                    <Input
+                      type='email'
+                      autoComplete='email'
+                      placeholder='Enter your email address'
+                      {...field}
+                    />
                   </FormControl>
-                  <FormDescription>E.g email@brandonu.ca</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -109,12 +118,49 @@ export function SignupForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <div className='grid gap-2'>
+                    <div className='flex items-center gap-2 relative'>
                       <Input
-                        type='password'
+                        type={showPassword ? 'text' : 'password'}
+                        autoComplete='new-password'
                         placeholder='Enter password'
                         {...field}
+                        className='pr-14'
                       />
+                      <span
+                        className='absolute right-3 text-sm text-gray-500'
+                        onClick={() => setShowPassword((show) => !show)}
+                      >
+                        <Eye className='text-gray-400' />
+                      </span>
+                    </div>
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='confirm_password'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <div className='flex items-center gap-2k relative'>
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        autoComplete='new-password'
+                        placeholder='Enter password'
+                        {...field}
+                        className='pr-14'
+                      />
+                      <span
+                        className='absolute right-3 text-sm text-gray-500'
+                        onClick={() => setShowPassword((show) => !show)}
+                      >
+                        <Eye className='text-gray-400' />
+                      </span>
                     </div>
                   </FormControl>
 
@@ -133,7 +179,18 @@ export function SignupForm() {
               type='submit'
               className='w-full bg-accent hover:bg-accent/90'
             >
-              Create account
+              {form.formState.isSubmitting ? (
+                <div
+                  className='inline-block size-4 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-gray-100'
+                  role='status'
+                >
+                  <span className='!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]'>
+                    Loading...
+                  </span>
+                </div>
+              ) : (
+                'Create account'
+              )}
             </Button>
           </form>
         </Form>

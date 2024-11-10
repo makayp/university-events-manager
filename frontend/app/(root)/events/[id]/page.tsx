@@ -1,7 +1,6 @@
-import { EventSlider } from '@/components/event-carousel';
 import EventDropdown from '@/components/event-dropdown';
 import { Button } from '@/components/ui/button';
-import { getEventById, getEventOrganiser } from '@/lib/action';
+import { getEventById } from '@/lib/action';
 
 import { EventData } from '@/lib/declaration';
 import { formatDateTime, normalizeUrl } from '@/lib/utils';
@@ -18,7 +17,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import previewImage from '@/public/images/default-fallback-image.png';
-import SessionProvider from '@/context/session-provider';
+import EventsList from '@/components/events-list';
 
 export default async function Page({
   params,
@@ -29,9 +28,9 @@ export default async function Page({
 
   const event: EventData = await getEventById(id);
 
-  const organiser = await getEventOrganiser(event.organiser);
+  const organiser = event.user_info;
 
-  const imageSrc = event.image || previewImage;
+  const imageSrc = event.image_url || previewImage;
 
   if (!event) notFound();
   return (
@@ -53,9 +52,9 @@ export default async function Page({
           <div className='flex flex-col md:flex-row md:justify-between gap-7'>
             <div className='space-y-5'>
               <h3 className='font-semibold text-[22px] md:pr-8'>
-                {event.title}
+                {event.event_name}
               </h3>
-              <h6 className='italic text-sm md:text-[17px] text-gray-500'>
+              <h6 className='italic text-sm md:text-[16.5px] text-gray-500'>
                 By {organiser.first_name} {organiser.last_name}
               </h6>
 
@@ -64,14 +63,14 @@ export default async function Page({
                   <ClockIcon className='size-5 text-secondary/80' />
                   <span className=''>Starts:</span>{' '}
                   <span>
-                    {formatDateTime(new Date(event.start_date)).dateTime}
+                    {formatDateTime(new Date(event.start_time)).dateTime}
                   </span>
                 </p>
                 <p className='flex items-center gap-2'>
                   <CalendarDateRangeIcon className='size-5 text-secondary/80' />
                   <span className=''>Ends:</span>{' '}
                   <span>
-                    {formatDateTime(new Date(event.end_date)).dateTime}
+                    {formatDateTime(new Date(event.end_time)).dateTime}
                   </span>
                 </p>
                 <p className=' whitespace-nowrap flex items-center gap-2'>
@@ -97,7 +96,7 @@ export default async function Page({
               <Button size='lg' className='rounded-full md:w-[150px] flex-1'>
                 Register
               </Button>{' '}
-              <EventDropdown eventId={id} eventOrganiser={event.organiser} />
+              <EventDropdown eventId={id} eventOrganiser={organiser} />
             </div>
           </div>
 
@@ -117,7 +116,7 @@ export default async function Page({
                 </Button>
               </Link>
             </div>
-            <EventSlider />
+            <EventsList numEvents={10} type='slider' />
           </div>
         </div>
       </div>

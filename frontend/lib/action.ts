@@ -7,6 +7,7 @@ import { auth, signIn, signOut } from '@/auth';
 import { notFound, redirect } from 'next/navigation';
 import { AuthError } from 'next-auth';
 import { EventData } from './declaration';
+import { uploadImage } from './cloudinary';
 
 export async function signup(userData: z.infer<typeof SignUpSchema>) {
   let isAccountCreated = false;
@@ -86,34 +87,34 @@ export async function getEvents(limit: number) {
 
     data = await res.json();
 
-    console.log(data);
+    if (!res.ok) return { error: 'Something went wrong. Please try again' };
 
-    if (res.ok) return data.events;
+    return data.events;
   } catch (error) {
     console.log(error);
-    // return { error: { message: 'Something went wrong' } };
+    return {
+      error: 'Server error. Please try again later.',
+    };
   }
-
-  return [];
 }
 
 export async function getEventById(id: string) {
-  console.log('id', id);
-  let event;
+  let data;
   let res;
   try {
-    res = await fetch(`http://localhost:8000/api/events/${id}`);
-
-    event = await res.json();
-    console.log(res.status);
+    res = await fetch(`${process.env.SERVER_ENDPOINT}/events/${id}`);
   } catch (error) {
     console.log(error);
-    throw new Error('Failed to fetch event data');
+    throw new Error('Failed to connect to the server. Please try again later.');
   }
 
-  if (res.status == 404) notFound();
+  if (res?.status == 404) notFound();
 
-  return event;
+  if (!res.ok) throw new Error('Something went wrong');
+
+  data = await res.json();
+
+  return data.event;
 }
 
 export async function getUser(token?: string) {
@@ -121,7 +122,7 @@ export async function getUser(token?: string) {
 
   if (!token) {
     session = await auth();
-    token = session?.user.accessToken!;
+    token = session?.user.accessToken;
   }
 
   try {
@@ -144,12 +145,152 @@ export async function getUser(token?: string) {
   return null;
 }
 
-export async function getEventOrganiser(organizerId: string) {}
-
-export async function createEvent(event: z.infer<typeof EventFormSchema>) {
+export async function createEvent(newEvent: z.infer<typeof EventFormSchema>) {
   const session = await auth();
 
-  if (!session) redirect('/login');
+  if (!session) {
+    console.log('no session');
+    redirect('/login?callbackUrl=/events/create');
+  }
 
-  const res = await fetch(`${process.env.SERVER_ENDPOINT}/events/create}`);
+  const event = {
+    ...newEvent,
+    start_time: newEvent.start_time.toISOString(),
+    end_time: newEvent.end_time.toISOString(),
+  };
+
+  let imageUrl;
+  if (event.image) {
+    try {
+      imageUrl = await uploadImage({
+        image: event.image,
+        folder: 'event-image',
+      });
+    } catch (error) {
+      return {
+        error: 'Something went wrong. Please try again later.',
+      };
+    }
+
+    event.image_url = imageUrl;
+  }
+
+  let data;
+
+  try {
+    const res = await fetch(`${process.env.SERVER_ENDPOINT}/events/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.user.accessToken}`,
+      },
+      body: JSON.stringify(event),
+    });
+
+    if (!res.ok) {
+      return { error: `Server error: ${res.status}` };
+    }
+
+    data = await res.json();
+  } catch (error) {
+    console.error('Network error:', error);
+    return {
+      error: 'Server error. Please try again later.',
+    };
+  }
+
+  return { success: 'Event updated successfully', newEventId: data.event };
+}
+
+export async function updateEvent(
+  updatedEvent: z.infer<typeof EventFormSchema>,
+  eventId: string
+) {
+  const session = await auth();
+
+  if (!session) {
+    console.log('no session');
+    redirect(`/login?callbackUrl=/events/${eventId}/edit`);
+  }
+
+  const event = {
+    ...updatedEvent,
+    start_time: updatedEvent.start_time.toISOString(),
+    end_time: updatedEvent.end_time.toISOString(),
+  };
+
+  let imageUrl;
+  if (event.image) {
+    try {
+      imageUrl = await uploadImage({
+        image: event.image,
+        folder: 'event-image',
+      });
+    } catch (error) {
+      return {
+        error: 'Something went wrong. Please try again later.',
+      };
+    }
+  }
+
+  event.image_url = imageUrl || event.image_url;
+
+  let data;
+
+  try {
+    const res = await fetch(
+      `${process.env.SERVER_ENDPOINT}/events/${eventId}/update`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.user.accessToken}`,
+        },
+        body: JSON.stringify(event),
+      }
+    );
+
+    if (!res.ok) {
+      return { error: `Server error: ${res.status}` };
+    }
+
+    data = await res.json();
+  } catch (error) {
+    console.error('Network error:', error);
+    return {
+      error: 'Server error. Please try again later.',
+    };
+  }
+
+  return { success: 'Event updated successfully' };
+}
+
+export async function deleteEvent(eventId: string) {
+  const session = await auth();
+
+  if (!session) {
+    console.log('no session');
+    redirect(`/login?callbackUrl=/events/${eventId}`);
+  }
+
+  try {
+    const res = await fetch(
+      `${process.env.SERVER_ENDPOINT}/events/${eventId}/delete`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${session.user.accessToken}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      return { error: 'Something went wrong. Try again' };
+    }
+
+    return { success: 'Event deleted successfully' };
+  } catch (error) {
+    console.log(error);
+    return { error: 'Server error. Try again' };
+  }
 }

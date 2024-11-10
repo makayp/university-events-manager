@@ -11,7 +11,7 @@ export default function ImageUploader({
 }: {
   imageUrl: string;
   onFieldChange: (value: string) => void;
-  setImage: Dispatch<SetStateAction<File | null>>;
+  setImage: Dispatch<SetStateAction<File | undefined>>;
 }) {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -48,6 +48,7 @@ export default function ImageUploader({
             alt='preview'
             width={250}
             height={250}
+            priority
             className='w-full object-cover object-center'
           />
         </div>
@@ -82,7 +83,7 @@ export default function ImageUploader({
           onClick={(e) => {
             e.stopPropagation();
             onFieldChange('');
-            setImage(null);
+            setImage(undefined);
           }}
         >
           <TrashIcon />

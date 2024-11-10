@@ -3,6 +3,7 @@ import { User, type DefaultSession } from 'next-auth';
 
 export interface SessionUser {
   id: string;
+  user_id: string;
   email: string;
   image: string;
   emailVerified: Date | null;
@@ -24,17 +25,25 @@ declare module 'next-auth' {
 
 export type CustomJWTPayload = JWTPayload & User;
 
-export type EventData = {
+export interface EventUserInfo {
+  email: string;
+  first_name: string;
+  last_name: string;
+  image_url: string | null;
+  user_id: number;
+}
+
+export interface EventData {
   id: number;
-  title: string;
+  event_name: string;
   description: string;
+  start_time: string;
+  end_time: string;
+  image_url: string;
   location: string;
-  organiser: string;
-  image: string;
-  start_date: string;
-  end_date: string;
   url: '';
-};
+  user_info: EventUserInfo;
+}
 
 export type DBUser = {
   id: number;

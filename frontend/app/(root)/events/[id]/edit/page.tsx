@@ -1,8 +1,4 @@
-import EventForm from '@/components/event-form';
-import { getEventById } from '@/lib/action';
-import { EventData } from '@/lib/declaration';
-import { EventFormSchema } from '@/lib/zod';
-import { z } from 'zod';
+import UpdateEvent from '@/components/update-event';
 
 export default async function Page({
   params,
@@ -10,21 +6,6 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-
-  const event = await getEventById(id);
-
-  //Fix types
-  // const eventData: z.infer<typeof EventFormSchema> = {
-  //   ...event,
-  //   startDateTime: new Date(event.start_date),
-  //   endDateTime: new Date(event.end_date),
-  // };
-
-  const eventData = {
-    ...event,
-    startDateTime: new Date(event.start_date),
-    endDateTime: new Date(event.end_date),
-  };
 
   return (
     <div className='pb-20'>
@@ -37,7 +18,7 @@ export default async function Page({
           </div>
         </div>
         <div className='px-4 sm:px-8 max-w-4xl mx-auto my-10h'>
-          <EventForm type='Update' event={eventData} />
+          <UpdateEvent eventId={id} />
         </div>
       </div>
     </div>

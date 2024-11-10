@@ -1,4 +1,5 @@
 import EventsCollection from '@/components/events-collection';
+import EventsList from '@/components/events-list';
 import { Input } from '@/components/ui/input';
 import { getEvents } from '@/lib/action';
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/20/solid';
@@ -31,7 +32,7 @@ export default async function Page() {
         </div>
 
         <div className='container'>
-          <EventsCollection events={events} paginate />
+          <EventsList type='collection' numEvents={12} paginate />
         </div>
       </div>
     </div>

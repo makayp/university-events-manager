@@ -14,13 +14,6 @@ export default function EventsCollection({
   paginate?: boolean;
   className?: string;
 }) {
-  if (events.length < 1)
-    return (
-      <div className='flex items-center  -center justify-center h-36'>
-        <p>No events currently, check back later.</p>
-      </div>
-    );
-
   return (
     <div className={className}>
       <div className='py-5'>
@@ -35,14 +28,17 @@ export default function EventsCollection({
             })}
           </ul>
         </div>
-        <div className='mt-10 md:flex items-center justify-center hidden '>
-          <Link href='/events'>
-            <Button size='lg' className='rounded-full px-10 h-12'>
-              View more <ArrowRightIcon />
-            </Button>
-          </Link>
-        </div>
-        <div className={clsx({ hidden: !paginate })}>Add Pagination</div>
+        {!paginate ? (
+          <div className='mt-14 md:flex items-center justify-center hidden '>
+            <Link href='/events'>
+              <Button variant='link' className='text-[15px] underline '>
+                View more <ArrowRightIcon />
+              </Button>
+            </Link>
+          </div>
+        ) : (
+          <div>Add Pagination</div>
+        )}
       </div>
     </div>
   );
