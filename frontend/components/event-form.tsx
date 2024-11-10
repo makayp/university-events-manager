@@ -30,6 +30,8 @@ import Warning from '@/public/icons/warning.svg';
 import { Toast } from './ui/toast';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { checkFileSize } from '@/lib/utils';
+import { MAX_FILE_SIZE } from '../lib/constants';
 
 export default function EventForm({
   type,
@@ -62,6 +64,17 @@ export default function EventForm({
 
   async function onSubmit(values: z.infer<typeof EventFormSchema>) {
     const eventData = { ...values, image };
+
+    if (image) {
+      const fileSize = checkFileSize(image);
+
+      if (fileSize && fileSize > MAX_FILE_SIZE) {
+        form.setError('root', {
+          message: 'Image must be less than 2MB',
+        });
+        return;
+      }
+    }
 
     let response:
       | { success?: string; error?: string; newEventId?: string }

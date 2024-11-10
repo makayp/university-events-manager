@@ -79,3 +79,19 @@ export function copyText(text: string) {
   if (!navigator.clipboard) return;
   navigator.clipboard.writeText(text);
 }
+
+export function checkFileSize(file: File) {
+  if (!file || !file.type.startsWith('image/')) {
+    console.error('File is not an image');
+    return;
+  }
+
+  // Get the file size in bytes
+  const fileSizeInBytes = file.size;
+
+  // Convert to kilobytes and megabytes
+  const fileSizeInKB = fileSizeInBytes / 1024;
+  const fileSizeInMB = fileSizeInKB / 1024;
+
+  return fileSizeInMB;
+}
