@@ -8,7 +8,7 @@ import NavLinks from './nav-links';
 
 export default function Header() {
   return (
-    <header className='flex items-center justify-between gap-5 lg:gap-20 px-3 sm:px-5 lg:px-14 xl:px-20 py-2.5 bg-background border-b h-[55px] sm:h-[70px]'>
+    <header className='flex items-center justify-between gap-5 lg:gap-20 px-3 sm:px-5 lg:px-14 xl:px-20 py-2.5 bg-background border-b h-[55px] sm:min-h-[65px]'>
       <div>
         <Link href='/'>
           <h1 className='text-xl font-medium'>EventHub</h1>

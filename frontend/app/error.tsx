@@ -25,7 +25,7 @@ export default function Error() {
 
       <Button
         type='button'
-        className=''
+        className='mt-2'
         onClick={() => {
           router.push('/');
         }}

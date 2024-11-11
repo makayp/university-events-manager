@@ -1,6 +1,21 @@
 import { type NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: [
+        {
+          loader: '@svgr/webpack',
+          options: {
+            icon: true,
+          },
+        },
+      ],
+    });
+
+    return config;
+  },
   images: {
     remotePatterns: [
       {
@@ -11,6 +26,10 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
+    staleTimes: {
+      static: 0,
+      dynamic: 0,
+    },
     serverActions: {
       bodySizeLimit: '3mb',
     },
