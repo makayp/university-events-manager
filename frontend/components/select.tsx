@@ -9,9 +9,9 @@ import {
   Select as SelectWrapper,
 } from '@/components/ui/select';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { debounce } from './search';
-import { ChangeEvent, useCallback, useState } from 'react';
 
 const searchFields = [
   { name: 'Event name', value: 'event_name' },

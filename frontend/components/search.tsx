@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  AdjustmentsHorizontalIcon,
-  MagnifyingGlassIcon,
-} from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { Input } from './ui/input';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';

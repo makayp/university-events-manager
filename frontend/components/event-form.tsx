@@ -14,23 +14,22 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { EventFormSchema } from '@/lib/zod';
-import { Textarea } from './ui/textarea';
-import ImageUploader from './image-uploader';
-import { useState } from 'react';
 import {
   CalendarDateRangeIcon,
   LinkIcon,
   MapPinIcon,
 } from '@heroicons/react/20/solid';
+import { useState } from 'react';
+import ImageUploader from './image-uploader';
+import { Textarea } from './ui/textarea';
 
+import { useToast } from '@/hooks/use-toast';
+import { createEvent, updateEvent } from '@/lib/action';
+import { checkFileSize } from '@/lib/utils';
+import Warning from '@/public/icons/warning.svg';
+import { useRouter } from 'next/navigation';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { createEvent, updateEvent } from '@/lib/action';
-import Warning from '@/public/icons/warning.svg';
-import { Toast } from './ui/toast';
-import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
-import { checkFileSize } from '@/lib/utils';
 import { MAX_FILE_SIZE } from '../lib/constants';
 
 export default function EventForm({

@@ -1,12 +1,9 @@
 'use client';
 
-import Link from 'next/link';
-import NavLinks from './header/nav-links';
-import LogoutButton from './auth/logout-button';
-import { Button } from './ui/button';
-import { profileLinks } from './user-dropdown';
 import clsx from 'clsx';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { profileLinks } from './user-dropdown';
 
 const links = profileLinks;
 

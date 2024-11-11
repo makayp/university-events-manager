@@ -1,5 +1,11 @@
 import EventsList from '@/components/events-list';
 import Search from '@/components/search';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Explore Events',
+  description: "Let's find various events happening around campus.",
+};
 
 export default async function Page({
   searchParams,

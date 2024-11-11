@@ -7,14 +7,12 @@ import { z } from 'zod';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -25,11 +23,12 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import Warning from '@/public/icons/warning.svg';
+import Link from 'next/link';
 
-import { SignUpSchema } from '@/lib/zod';
 import { signup } from '@/lib/action';
-import { useState } from 'react';
+import { SignUpSchema } from '@/lib/zod';
 import { Eye } from 'lucide-react';
+import { useState } from 'react';
 
 export function SignupForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);

@@ -104,7 +104,6 @@ export async function getEvents({
       await res.json();
 
     if (!res.ok) return { error: 'Something went wrong. Please try again' };
-    console.log(data.events.length);
 
     if (query) {
       return { events: data.events };
@@ -349,8 +348,7 @@ export async function checkIsRegistered({ eventId }: { eventId: string }) {
   const session = await auth();
 
   if (!session) {
-    console.log('no session');
-    redirect(`/login?callbackUrl=/events/${eventId}`);
+    return false;
   }
 
   const registeredEvents: EventData[] = await getRegisteredEvents();

@@ -8,6 +8,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { useToast } from '@/hooks/use-toast';
+import { deleteEvent } from '@/lib/action';
+import { EventUserInfo } from '@/lib/declaration';
 import {
   EllipsisVerticalIcon,
   PencilSquareIcon,
@@ -16,16 +19,12 @@ import {
 } from '@heroicons/react/20/solid';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import ConfirmDialog from './confirm-dialog';
 import Share from './share-dialog';
-import { Button } from './ui/button';
-import { EventUserInfo } from '@/lib/declaration';
-import { AlertDialogAction } from './ui/alert-dialog';
-import { deleteEvent } from '@/lib/action';
 import Spinner from './spinner';
-import { usePathname, useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/use-toast';
+import { Button } from './ui/button';
 
 export default function EventDropdown({
   eventId,

@@ -1,4 +1,9 @@
 import UpdateEvent from '@/components/update-event';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Update Event',
+};
 
 export default async function Page({
   params,

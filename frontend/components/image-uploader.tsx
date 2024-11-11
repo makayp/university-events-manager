@@ -1,8 +1,8 @@
+import { ArrowUpCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Button } from './ui/button';
-import { ArrowUpCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 export default function ImageUploader({
   onFieldChange,

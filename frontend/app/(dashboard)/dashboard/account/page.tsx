@@ -1,8 +1,8 @@
 export default function Page() {
   return (
-    <section>
+    <section className='h-full py-10 text-center'>
       <div>
-        <h1 className='text-xl'>Profile</h1>
+        <h1 className='text-xl'>Coming soon.</h1>
       </div>
     </section>
   );
