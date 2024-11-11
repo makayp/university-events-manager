@@ -14,7 +14,14 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: { default: 'EventHub', template: '%s | EventHub' },
   description: 'An event management web application for a university',
-  metadataBase: new URL('https://eventhub-react.vercel.sh'),
+  metadataBase: new URL('https://eventhub-react.vercel.app'),
+  openGraph: {
+    title: 'EventHub',
+    description: 'An event management web application for a university',
+    url: 'https://eventhub-react.vercel.app',
+    siteName: 'EventHub',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({
