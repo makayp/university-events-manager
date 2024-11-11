@@ -23,13 +23,13 @@ const nextConfig: NextConfig = {
         hostname: 'res.cloudinary.com',
         port: '',
       },
+      {
+        protocol: 'http',
+        hostname: 'dummyimage.com',
+      },
     ],
   },
   experimental: {
-    staleTimes: {
-      static: 0,
-      dynamic: 0,
-    },
     serverActions: {
       bodySizeLimit: '3mb',
     },

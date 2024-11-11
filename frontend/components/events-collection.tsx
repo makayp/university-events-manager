@@ -1,17 +1,19 @@
 import { EventData } from '@/lib/declaration';
-import Card from './card';
-import clsx from 'clsx';
-import Link from 'next/link';
-import { Button } from './ui/button';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
+import Link from 'next/link';
+import Card from './card';
+import { Button } from './ui/button';
+import Pagination from './pagination';
 
 export default function EventsCollection({
   events,
   paginate = false,
+  totalPages,
   className,
 }: {
   events: EventData[];
   paginate?: boolean;
+  totalPages: number | undefined;
   className?: string;
 }) {
   return (
@@ -36,8 +38,10 @@ export default function EventsCollection({
               </Button>
             </Link>
           </div>
-        ) : (
-          <div>Add Pagination</div>
+        ) : !totalPages ? null : (
+          <div className='mt-5 py-20 flex items-center justify-center'>
+            {<Pagination totalPages={totalPages} />}
+          </div>
         )}
       </div>
     </div>

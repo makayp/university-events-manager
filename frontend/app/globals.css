@@ -104,3 +104,8 @@
 .react-datepicker__time-list-item--selected {
   background-color: hsl(var(--primary)) !important;
 }
+
+input,
+textarea {
+  touch-action: manipulation !important;
+}

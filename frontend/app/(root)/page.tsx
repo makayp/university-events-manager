@@ -1,8 +1,5 @@
-import { EventSlider } from '@/components/event-carousel';
-import EventsCollection from '@/components/events-collection';
 import EventsList from '@/components/events-list';
 import { Button } from '@/components/ui/button';
-import { getEvents } from '@/lib/action';
 import heroImage from '@/public/images/hero-image.jpg';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import Image from 'next/image';
@@ -10,7 +7,7 @@ import Link from 'next/link';
 
 export default async function Home() {
   return (
-    <main>
+    <>
       <section className='md:container md:mt-6 min-h-[500px] md:min-h-[400px] lg:min-h-[450px] flex flex-col'>
         <div className='py-8 bg-black/90 flex-1 flex flex-col justify-end relative md:rounded-2xl overflow-hidden'>
           <Image
@@ -47,7 +44,7 @@ export default async function Home() {
           </div>
         </div>
       </section>
-      <section className='py-20'>
+      <section className='pt-20'>
         <div className='container flex flex-col gap-2'>
           <div className='flex items-center justify-between'>
             <h1 className='text-[22px] md:text-2xl font-semibold'>
@@ -64,11 +61,11 @@ export default async function Home() {
               <EventsList type='collection' numEvents={6} />
             </div>
             <div className='md:hidden'>
-              <EventsList type='slider' numEvents={6} />
+              <EventsList type='slider' numEvents={8} />
             </div>
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }

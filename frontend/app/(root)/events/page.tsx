@@ -1,13 +1,18 @@
-import EventsCollection from '@/components/events-collection';
 import EventsList from '@/components/events-list';
-import { Input } from '@/components/ui/input';
-import { getEvents } from '@/lib/action';
-import { AdjustmentsHorizontalIcon } from '@heroicons/react/20/solid';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import Search from '@/components/search';
 
-export default async function Page() {
-  const events = await getEvents(6);
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ page: string; query: string; searchBy: string }>;
+}) {
+  const queryParams = await searchParams;
 
+  const page = Number(queryParams.page) || 1;
+  const field = queryParams.searchBy || 'event_name';
+  const query = queryParams.query || '';
+
+  console.log('Page: ' + page, 'Query: ' + query, 'Field: ' + field);
   return (
     <div className='py-2 md:py-7'>
       <div className='flex flex-col gap-4'>
@@ -19,20 +24,18 @@ export default async function Page() {
             </h3>
           </div>
 
-          <div className='relative flex items-center w-full  max-w-3xl mx-auto'>
-            <MagnifyingGlassIcon className='size-5 top-1/2 -translate-y-1/2 left-2 absolute opacity-60' />
-            <Input
-              placeholder='Search'
-              className='rounded-full pl-8 h-10 lg:h-10 shadow-none'
-            />
-            <span className='border-l-[1.5px] border-gray-300 absolute right-4 top-2.5 bottom-2.5 pl-1 flex items-center'>
-              <AdjustmentsHorizontalIcon className='size-[18px] text-gray-700' />
-            </span>
-          </div>
+          <Search />
         </div>
 
         <div className='container'>
-          <EventsList type='collection' numEvents={12} paginate />
+          <EventsList
+            type='collection'
+            numEvents={12}
+            paginate
+            page={page}
+            query={query}
+            field={field}
+          />
         </div>
       </div>
     </div>

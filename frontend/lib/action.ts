@@ -77,19 +77,40 @@ export async function logout() {
   await signOut();
 }
 
-export async function getEvents(limit: number) {
-  let data;
-
+export async function getEvents({
+  limit,
+  query,
+  page,
+  field,
+}: {
+  limit: number;
+  query?: string;
+  page?: number;
+  field?: string;
+}) {
   try {
-    const res = await fetch(
-      `${process.env.SERVER_ENDPOINT}/events/upcoming?per_page=${limit}`
-    );
+    let res;
 
-    data = await res.json();
+    if (query)
+      res = await fetch(
+        `${process.env.SERVER_ENDPOINT}/events/search?text=${query}&field=${field}&per_page=${limit}`
+      );
+    else
+      res = await fetch(
+        `${process.env.SERVER_ENDPOINT}/events/upcoming?per_page=${limit}&page=${page}`
+      );
+
+    const data: { events: EventData[]; pagination: { total_pages: number } } =
+      await res.json();
 
     if (!res.ok) return { error: 'Something went wrong. Please try again' };
+    console.log(data.events.length);
 
-    return data.events;
+    if (query) {
+      return { events: data.events };
+    }
+
+    return { events: data.events, totalPages: data.pagination.total_pages };
   } catch (error) {
     console.log(error);
     return {

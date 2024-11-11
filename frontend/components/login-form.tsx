@@ -122,6 +122,7 @@ export function LoginForm() {
 
             <Button
               type='submit'
+              disabled={form.formState.isSubmitting}
               className='w-full bg-accent hover:bg-accent/90'
             >
               {form.formState.isSubmitting ? (
