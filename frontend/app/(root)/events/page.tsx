@@ -18,7 +18,6 @@ export default async function Page({
   const field = queryParams.searchBy || 'event_name';
   const query = queryParams.query || '';
 
-  console.log('Page: ' + page, 'Query: ' + query, 'Field: ' + field);
   return (
     <div className='py-2 md:py-7'>
       <div className='flex flex-col gap-4'>
