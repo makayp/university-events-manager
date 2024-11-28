@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Poppins } from 'next/font/google';
 import clsx from 'clsx';
@@ -24,6 +24,12 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,11 +37,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <meta
-        name='viewport'
-        content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
-      />
-
       <body className={clsx('font-sans antialiased', poppins.variable)}>
         <AuthProvider>{children}</AuthProvider>
         <Toaster />

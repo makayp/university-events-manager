@@ -1,7 +1,13 @@
 'use server';
 
 import { z } from 'zod';
-import { EventFormSchema, SignInSchema, SignUpSchema } from './zod';
+import {
+  ChangePasswordSchema,
+  EventFormSchema,
+  SignInSchema,
+  SignUpSchema,
+  UpdateAccountSchema,
+} from './zod';
 
 import { auth, signIn, signOut } from '@/auth';
 import { notFound, redirect } from 'next/navigation';
@@ -431,4 +437,19 @@ export async function unregisterEvent({ eventId }: { eventId: string }) {
       error: 'Server error. Please try again later.',
     };
   }
+}
+
+export async function updateAccount(
+  updatedUser: z.infer<typeof UpdateAccountSchema>
+) {
+  console.log(updatedUser);
+  return { success: 'string', error: 'string' };
+}
+
+export async function changePassword(
+  values: z.infer<typeof ChangePasswordSchema>
+) {
+  const { password, new_password } = values;
+  console.log(values);
+  return { success: 'string', error: 'string' };
 }

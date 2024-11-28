@@ -28,8 +28,6 @@ export function Select({ className }: { className?: string }) {
   const pathname = usePathname();
   const router = useRouter();
 
-  console.log('searchBy', searchParams.get('searchBy'));
-
   const handleSearch = useCallback(
     debounce(function (selected: string) {
       const params = new URLSearchParams(searchParams);

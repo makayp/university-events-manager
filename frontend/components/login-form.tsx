@@ -30,6 +30,8 @@ import { SignInSchema } from '@/lib/zod';
 import { login } from '@/lib/action';
 import { Eye } from 'lucide-react';
 import { useState } from 'react';
+import Spinner from './spinner';
+import Logo from './header/logo';
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -50,7 +52,12 @@ export function LoginForm() {
   return (
     <Card className='mx-auto max-w-[400px] shadow-none flex flex-col'>
       <CardHeader>
-        <CardTitle className='text-2xl'>Login</CardTitle>
+        <div className='space-y-10'>
+          <Link href='/'>
+            <Logo className='w-[7rem] md:w-[7rem]' />
+          </Link>
+          <CardTitle className='text-2xl'>Login</CardTitle>
+        </div>
         <CardDescription>
           Enter your credentials to login to your account.
         </CardDescription>
@@ -125,18 +132,7 @@ export function LoginForm() {
               disabled={form.formState.isSubmitting}
               className='w-full bg-accent hover:bg-accent/90'
             >
-              {form.formState.isSubmitting ? (
-                <div
-                  className='inline-block size-4 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-gray-100'
-                  role='status'
-                >
-                  <span className='!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]'>
-                    Loading...
-                  </span>
-                </div>
-              ) : (
-                'Login'
-              )}
+              {form.formState.isSubmitting ? <Spinner size='small' /> : 'Login'}
             </Button>
           </form>
         </Form>

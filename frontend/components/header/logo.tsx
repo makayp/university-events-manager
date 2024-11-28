@@ -1,10 +1,13 @@
 import Image from 'next/image';
 import LogoImage from '@/public/images/logo.png';
+import { twMerge } from 'tailwind-merge';
 
-export default function Logo() {
+export default function Logo({ className }: { className?: string }) {
   return (
-    <h1 className='text-xl font-medium'>
-      <Image src={LogoImage} alt='Logo' className='w-[7rem] sm:w-[7.3rem]' />
-    </h1>
+    <Image
+      src={LogoImage}
+      alt='Logo'
+      className={twMerge('w-[7rem] sm:w-[7.3rem]', className)}
+    />
   );
 }

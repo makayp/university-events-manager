@@ -31,6 +31,7 @@ import { useRouter } from 'next/navigation';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { MAX_FILE_SIZE } from '../lib/constants';
+import Spinner from './spinner';
 
 export default function EventForm({
   type,
@@ -291,17 +292,10 @@ export default function EventForm({
           type='submit'
           size='lg'
           disabled={form.formState.isSubmitting}
-          className='rounded-full h- w-fullj'
+          className='rounded-full'
         >
           {form.formState.isSubmitting ? (
-            <div
-              className='inline-block size-4 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-gray-100'
-              role='status'
-            >
-              <span className='!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]'>
-                Loading...
-              </span>
-            </div>
+            <Spinner size='small' />
           ) : (
             `${type} Event`
           )}

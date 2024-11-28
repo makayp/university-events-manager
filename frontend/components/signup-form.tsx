@@ -29,6 +29,9 @@ import { signup } from '@/lib/action';
 import { SignUpSchema } from '@/lib/zod';
 import { Eye } from 'lucide-react';
 import { useState } from 'react';
+import Logo from './header/logo';
+import PasswordValidation from './password-validation';
+import Spinner from './spinner';
 
 export function SignupForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -44,6 +47,8 @@ export function SignupForm() {
     },
   });
 
+  const password = form.watch('password');
+
   async function onSubmit(values: z.infer<typeof SignUpSchema>) {
     console.log(values);
     const data = await signup(values);
@@ -52,9 +57,14 @@ export function SignupForm() {
   }
 
   return (
-    <Card className='mx-auto max-w-[450px] shadow-none flex flex-col'>
+    <Card className='mx-auto max-w-xl shadow-none border-0 sm:border flex flex-col'>
       <CardHeader>
-        <CardTitle className='text-2xl'>Create Account</CardTitle>
+        <div className='space-y-10'>
+          <Link href='/'>
+            <Logo className='w-[7rem] md:w-[7rem]' />
+          </Link>
+          <CardTitle className='text-2xl'>Create Account</CardTitle>
+        </div>
         <CardDescription>
           Enter your information below to sign up.
         </CardDescription>
@@ -100,7 +110,6 @@ export function SignupForm() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      type='email'
                       autoComplete='email'
                       placeholder='Enter your email address'
                       {...field}
@@ -134,7 +143,10 @@ export function SignupForm() {
                     </div>
                   </FormControl>
 
-                  <FormMessage />
+                  <PasswordValidation
+                    password={password}
+                    errors={form.formState.errors.password}
+                  />
                 </FormItem>
               )}
             />
@@ -179,14 +191,7 @@ export function SignupForm() {
               className='w-full bg-accent hover:bg-accent/90'
             >
               {form.formState.isSubmitting ? (
-                <div
-                  className='inline-block size-4 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-gray-100'
-                  role='status'
-                >
-                  <span className='!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]'>
-                    Loading...
-                  </span>
-                </div>
+                <Spinner size='small' />
               ) : (
                 'Create account'
               )}

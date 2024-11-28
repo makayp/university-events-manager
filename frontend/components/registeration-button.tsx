@@ -63,7 +63,7 @@ export default function RegisterationButton({
       onClick={handleRegistration}
     >
       {isPending ? (
-        <Spinner type='small' color={isRegistered ? 'primary' : 'light'} />
+        <Spinner size='small' color={isRegistered ? 'primary' : 'light'} />
       ) : isRegistered ? (
         'Unregister'
       ) : (

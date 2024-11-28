@@ -84,7 +84,7 @@ export default function EventDropdown({
         setIsOpen={setAlertDialogOpen}
       >
         <Button disabled={isPending} className='min-w-24' onClick={handleClick}>
-          {isPending ? <Spinner type='small' /> : 'Delete'}
+          {isPending ? <Spinner size='small' /> : 'Delete'}
         </Button>
       </ConfirmDialog>
       <Share isOpen={isShareDialogOpen} setIsOpen={setShareDialogOpen} />

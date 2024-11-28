@@ -1,13 +1,13 @@
 import clsx from 'clsx';
 
 export default function Spinner({
-  type,
+  size,
   color = 'light',
 }: {
-  type: 'small' | 'large';
+  size: 'small' | 'large';
   color?: 'dark' | 'light' | 'primary';
 }) {
-  if (type == 'small')
+  if (size == 'small')
     return (
       <div
         className={clsx(
