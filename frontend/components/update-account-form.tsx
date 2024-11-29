@@ -95,145 +95,143 @@ export function UpdateUserData({
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className='flex flex-col gap-6 relative'
-      >
-        <FormField
-          control={form.control}
-          name='email'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email address</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  disabled
-                  readOnly
-                  placeholder='Enter your email address'
-                  autoComplete='email'
-                  className='shadow-none bg-gray-100'
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='first_name'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>First name</FormLabel>
-
-              <FormControl>
-                <div className='grid gap-2'>
-                  <div className='flex items-center relative'>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className='flex flex-col gap-6 lg:grid lg:grid-cols-[4fr_2fr] relative'>
+          <div className='flex flex-col gap-6'>
+            <FormField
+              control={form.control}
+              name='email'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email address</FormLabel>
+                  <FormControl>
                     <Input
-                      autoComplete='current-password'
-                      placeholder='Enter password'
                       {...field}
-                      className='shadow-none'
+                      disabled
+                      readOnly
+                      placeholder='email address'
+                      autoComplete='email'
+                      className='bg-gray-200'
                     />
-                  </div>
-                </div>
-              </FormControl>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='first_name'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>First name</FormLabel>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='last_name'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Last name</FormLabel>
-
-              <FormControl>
-                <div className='grid gap-2'>
-                  <div className='flex items-center relative'>
-                    <Input
-                      autoComplete='current-password'
-                      placeholder='Enter password'
-                      {...field}
-                      className='shadow-none'
-                    />
-                  </div>
-                </div>
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='image_url'
-          render={({ field }) => (
-            <FormItem className='w-full'>
-              <FormLabel>Avatar</FormLabel>
-
-              <FormControl>
-                <div className='flex flex-col gap-5 items-center py-10 lg:items-start'>
-                  <div className='flex items-center justify-center size-20 rounded-md overflow-clip border relative'>
-                    {field.value && (
-                      <Image
-                        src={field.value}
-                        fill
-                        alt='User avatar'
-                        className='object-cover object-center'
-                      />
-                    )}
-
-                    {!field.value && (
-                      <div className='flex items-center justify-center'>
-                        <UserIcon className='size-5 text-gray-400' />
+                  <FormControl>
+                    <div className='grid gap-2'>
+                      <div className='flex items-center relative'>
+                        <Input
+                          autoComplete='first-name'
+                          placeholder='firstname'
+                          {...field}
+                        />
                       </div>
-                    )}
-                  </div>
-                  <input
-                    type='file'
-                    accept='.png, .jpg, .jpeg'
-                    ref={fileInputRef}
-                    onChange={(e) =>
-                      handleFileChange(e.target.files, field.onChange)
-                    }
-                    className='hidden'
-                  />
-                  <div className='space-y-2 flex flex-col'>
-                    <Button
-                      variant='outline'
-                      type='button'
-                      onClick={() => {
-                        fileInputRef?.current?.click();
-                      }}
-                      className='text-xs'
-                    >
-                      Choose image
-                    </Button>
-                    {field.value && (
-                      <Button
-                        type='button'
-                        variant='destructive'
-                        onClick={() => {
-                          field.onChange('');
-                          setImage(undefined);
-                        }}
-                      >
-                        Remove
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </FormControl>
+                    </div>
+                  </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='last_name'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last name</FormLabel>
+
+                  <FormControl>
+                    <div className='grid gap-2'>
+                      <div className='flex items-center relative'>
+                        <Input
+                          autoComplete='last-name'
+                          placeholder='lastname'
+                          {...field}
+                        />
+                      </div>
+                    </div>
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className='flex flex-col items-center justify-center'>
+            <FormField
+              control={form.control}
+              name='image_url'
+              render={({ field }) => (
+                <FormItem className='w-full'>
+                  <FormControl>
+                    <div className='flex flex-col gap-5 items-center justify-center py-5'>
+                      <div className='flex items-center justify-center size-20 rounded-md overflow-clip border relative'>
+                        {field.value && (
+                          <Image
+                            src={field.value}
+                            fill
+                            alt='User avatar'
+                            className='object-cover object-center'
+                          />
+                        )}
+
+                        {!field.value && (
+                          <div className='flex items-center justify-center'>
+                            <UserIcon className='size-5 text-gray-400' />
+                          </div>
+                        )}
+                      </div>
+                      <input
+                        type='file'
+                        accept='.png, .jpg, .jpeg'
+                        ref={fileInputRef}
+                        onChange={(e) =>
+                          handleFileChange(e.target.files, field.onChange)
+                        }
+                        className='hidden'
+                      />
+                      <div className='space-y-2 flex flex-col'>
+                        <Button
+                          variant='outline'
+                          type='button'
+                          onClick={() => {
+                            fileInputRef?.current?.click();
+                          }}
+                          className='text-xs'
+                        >
+                          Choose image
+                        </Button>
+                        {field.value && (
+                          <Button
+                            type='button'
+                            variant='destructive'
+                            onClick={() => {
+                              field.onChange('');
+                              setImage(undefined);
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
 
         {form.formState.errors.root && (
           <FormMessage className='flex items-center gap-1'>
@@ -242,7 +240,7 @@ export function UpdateUserData({
           </FormMessage>
         )}
 
-        <div className='flex gap-2 sm:self-end'>
+        <div className='flex gap-2 sm:items-center justify-end mt-10'>
           <Button
             type='button'
             variant='outline'
@@ -312,95 +310,101 @@ export function ChangePassword() {
         onSubmit={form.handleSubmit(onSubmit)}
         className='flex flex-col gap-6 relative'
       >
-        <FormField
-          control={form.control}
-          name='password'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Current password</FormLabel>
-              <FormControl>
-                <div className='flex items-center gap-2 relative'>
-                  <Input
-                    type={showPassword ? 'text' : 'password'}
-                    autoComplete='new-password'
-                    placeholder='Enter password'
-                    {...field}
-                    className='pr-14'
+        <div className='flex flex-col gap-6 lg:grid lg:grid-cols-[4fr_2fr] relative'>
+          <div className='flex flex-col gap-6'>
+            <FormField
+              control={form.control}
+              name='password'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Current password</FormLabel>
+                  <FormControl>
+                    <div className='flex items-center gap-2 relative'>
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        autoComplete='new-password'
+                        placeholder='Enter password'
+                        {...field}
+                        className='pr-14'
+                      />
+                      <span
+                        className='absolute right-3 text-sm text-gray-500'
+                        onClick={() => setShowPassword((show) => !show)}
+                      >
+                        <Eye className='text-gray-400' />
+                      </span>
+                    </div>
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='new_password'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>New password</FormLabel>
+                  <FormControl>
+                    <div className='flex items-center gap-2 relative'>
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        autoComplete='new-password'
+                        placeholder='Enter password'
+                        {...field}
+                        className='pr-14'
+                      />
+                      <span
+                        className='absolute right-3 text-sm text-gray-500'
+                        onClick={() => setShowPassword((show) => !show)}
+                      >
+                        <Eye className='text-gray-400' />
+                      </span>
+                    </div>
+                  </FormControl>
+
+                  <PasswordValidation
+                    password={newPassword}
+                    errors={form.formState.errors.new_password}
                   />
-                  <span
-                    className='absolute right-3 text-sm text-gray-500'
-                    onClick={() => setShowPassword((show) => !show)}
-                  >
-                    <Eye className='text-gray-400' />
-                  </span>
-                </div>
-              </FormControl>
+                </FormItem>
+              )}
+            />
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name='confirm_password'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm password</FormLabel>
+                  <FormControl>
+                    <div className='flex items-center gap-2k relative'>
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        autoComplete='new-password'
+                        placeholder='Enter password'
+                        {...field}
+                        className='pr-14'
+                      />
+                      <span
+                        className='absolute right-3 text-sm text-gray-500'
+                        onClick={() => setShowPassword((show) => !show)}
+                      >
+                        <Eye className='text-gray-400' />
+                      </span>
+                    </div>
+                  </FormControl>
 
-        <FormField
-          control={form.control}
-          name='new_password'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>New password</FormLabel>
-              <FormControl>
-                <div className='flex items-center gap-2 relative'>
-                  <Input
-                    type={showPassword ? 'text' : 'password'}
-                    autoComplete='new-password'
-                    placeholder='Enter password'
-                    {...field}
-                    className='pr-14'
-                  />
-                  <span
-                    className='absolute right-3 text-sm text-gray-500'
-                    onClick={() => setShowPassword((show) => !show)}
-                  >
-                    <Eye className='text-gray-400' />
-                  </span>
-                </div>
-              </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-              <PasswordValidation
-                password={newPassword}
-                errors={form.formState.errors.new_password}
-              />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='confirm_password'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm password</FormLabel>
-              <FormControl>
-                <div className='flex items-center gap-2k relative'>
-                  <Input
-                    type={showPassword ? 'text' : 'password'}
-                    autoComplete='new-password'
-                    placeholder='Enter password'
-                    {...field}
-                    className='pr-14'
-                  />
-                  <span
-                    className='absolute right-3 text-sm text-gray-500'
-                    onClick={() => setShowPassword((show) => !show)}
-                  >
-                    <Eye className='text-gray-400' />
-                  </span>
-                </div>
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <div></div>
+        </div>
 
         {form.formState.errors.root && (
           <FormMessage className='flex items-center gap-1'>
