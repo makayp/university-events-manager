@@ -1,0 +1,112 @@
+{
+    "user1": {
+        "data": {
+            "email": "user1@mail.com",
+            "password": "1!aB1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": ""
+        },
+        "status_code": 201
+    },
+    "user2": {
+        "data": {
+            "email": "user2+tag@mail.com",
+            "password": "1!aB1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": ""
+        },
+        "status_code": 201
+    },
+    "user3": {
+        "data": {
+            "email": "user@mail.",
+            "password": "1!aB1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": ""
+        },
+        "status_code": 400
+    },
+    "user4": {
+        "data": {
+            "email": "user@.com",
+            "password": "1!aB1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": ""
+        },
+        "status_code": 400
+    },
+    "user5": {
+        "data": {
+            "email": "user@.",
+            "password": "1!aB1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": ""
+        },
+        "status_code": 400
+    },
+    "user6": {
+        "data": {
+            "email": "user@mailcom",
+            "password": "1!aB1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": ""
+        },
+        "status_code": 400
+    },
+    "user7": {
+        "data": {
+            "email": "user@",
+            "password": "1!aB1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": ""
+        },
+        "status_code": 400
+    },
+    "user8": {
+        "data": {
+            "email": "usermail.com",
+            "password": "1!aB1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": ""
+        },
+        "status_code": 400
+    },
+    "user9": {
+        "data": {
+            "email": "@mail.com",
+            "password": "1!aB1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": ""
+        },
+        "status_code": 400
+    },
+    "user10": {
+        "data": {
+            "email": "",
+            "password": "1!aB1234",
+            "firstName": "John",
+            "lastName": "Smithh",
+            "image_url": ""
+        },
+        "status_code": 400
+    },
+    "user11": {
+        "data": {
+            "email": ".com",
+            "password": "1!aB1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": ""
+        },
+        "status_code": 400
+    }
+}

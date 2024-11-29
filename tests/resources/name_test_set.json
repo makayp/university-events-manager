@@ -1,0 +1,42 @@
+{
+    "user1": {
+        "data": {
+            "email": "user1@mail.com",
+            "password": "1!aB1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": ""
+        },
+        "status_code": 201
+    },
+    "user2": {
+        "data": {
+            "email": "user2@mail.com",
+            "password": "1!aB1234",
+            "firstName": "",
+            "lastName": "Smith",
+            "image_url": ""
+        },
+        "status_code": 400
+    },
+    "user3": {
+        "data": {
+            "email": "user3@mail.com",
+            "password": "1!aB1234",
+            "firstName": "John",
+            "lastName": "",
+            "image_url": ""
+        },
+        "status_code": 400
+    },
+    "user4": {
+        "data": {
+            "email": "user4@mail.com",
+            "password": "1!aB1234",
+            "firstName": "",
+            "lastName": "",
+            "image_url": ""
+        },
+        "status_code": 400
+    }
+}
