@@ -3,19 +3,13 @@
 import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import SidebarUser from './sidebar-user';
 import { profileLinks } from './user-dropdown';
 
 const links = profileLinks;
 
-export default function SideNav() {
+export default function SideNav({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  const user = {
-    name: 'Emmanuel',
-    email: 'emmanueljhbiu@email.com',
-    avatar: '/images/default-fallback-image.png',
-  };
   return (
     <div className='flex h-full flex-col px-3 py-4 md:px-2'>
       <Link
@@ -46,7 +40,7 @@ export default function SideNav() {
         <div className='hidden h-auto w-full grow rounded-md bg-gray-50 md:block'></div>
 
         <div className='flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 text-sm hover:bg-gray-900/5 md:flex-none md:justify-start md:p-2 [&_svg]:size-4 [&_svg]:shrink-0'>
-          <SidebarUser user={user} />
+          {children}
         </div>
       </div>
     </div>

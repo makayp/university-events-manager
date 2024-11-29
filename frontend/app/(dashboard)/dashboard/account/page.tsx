@@ -1,36 +1,23 @@
-import {
-  ChangePassword,
-  UpdateUserData,
-} from '@/components/update-account-form';
+import AccountUpdateForm from '@/components/account-update-form';
+import Spinner from '@/components/spinner';
+import { Suspense } from 'react';
 
 export default function Page() {
-  const user = {
-    email: 'emmanuel@email.com',
-    first_name: 'Emmanuel',
-    last_name: 'Pop',
-    image_url: '',
-  };
   return (
-    <section>
-      <div className='space-y-10'>
+    <section className='relative min-h-full py-5'>
+      <div className='space-y-10 grow'>
         <h1 className='text-2xl font-medium'>Update Account</h1>
-        <div className='space-y-28 [&_input]:shadow-none'>
-          <div className='rounded-xl bg-gray-50 p-2 pt-4 md:p-4 space-y-10'>
-            <div className='space-y-5'>
-              <h3 className='text-xl font-medium md:ml-2'>Update User Info</h3>
-              <div className='bg-white p-4 md:p-6 rounded-xl'>
-                <UpdateUserData user={user} />
-              </div>
+        <Suspense
+          fallback={
+            <div className='flex items-center justify-center absolute inset-0'>
+              <Spinner size='x-large' />
             </div>
-
-            <div className='space-y-5'>
-              <h3 className='text-xl font-medium'>Update Password</h3>
-              <div className='bg-white p-4 md:p-6 rounded-xl'>
-                <ChangePassword />
-              </div>
-            </div>
+          }
+        >
+          <div className='space-y-28 [&_input]:shadow-none'>
+            <AccountUpdateForm />
           </div>
-        </div>
+        </Suspense>
       </div>
     </section>
   );

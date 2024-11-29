@@ -1,4 +1,4 @@
-import { getEvents } from '@/lib/action';
+import { getEvents } from '@/lib/event-data';
 import EventsCollection from './events-collection';
 import { EventSlider } from './event-carousel';
 import { EventData } from '@/lib/declaration';

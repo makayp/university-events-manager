@@ -37,6 +37,8 @@ export function UpdateUserData({
   const [image, setImage] = useState<File | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  user.image_url = user.image_url || '';
+
   const form = useForm<z.infer<typeof UpdateAccountSchema>>({
     resolver: zodResolver(UpdateAccountSchema),
     defaultValues: user,
@@ -245,7 +247,10 @@ export function UpdateUserData({
             type='button'
             variant='outline'
             size='lg'
-            onClick={() => form.reset()}
+            onClick={async () => {
+              setImage(undefined);
+              form.reset();
+            }}
             className='w-full sm:w-fit'
           >
             Reset
@@ -320,6 +325,13 @@ export function ChangePassword() {
                   <FormLabel>Current password</FormLabel>
                   <FormControl>
                     <div className='flex items-center gap-2 relative'>
+                      <input
+                        type='email'
+                        disabled
+                        readOnly
+                        autoComplete='email'
+                        className='hidden'
+                      />
                       <Input
                         type={showPassword ? 'text' : 'password'}
                         autoComplete='new-password'

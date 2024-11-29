@@ -2,7 +2,7 @@ import { auth } from '@/auth';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import RegisterationButton from './registeration-button';
-import { checkIsRegistered } from '@/lib/action';
+import { checkIsRegistered } from '@/lib/event-data';
 
 export default async function EventActionButton({
   eventId,

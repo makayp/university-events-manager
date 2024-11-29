@@ -1,7 +1,7 @@
 import { JWTPayload } from 'jose';
 import { User, type DefaultSession } from 'next-auth';
 
-export interface SessionUser {
+export interface SessionUser extends EventUserInfo {
   id: string;
   user_id: string;
   email: string;

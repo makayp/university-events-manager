@@ -1,6 +1,6 @@
 import EventDropdown from '@/components/event-dropdown';
 import { Button } from '@/components/ui/button';
-import { getEventById } from '@/lib/action';
+import { getEventById } from '@/lib/event-data';
 
 import { EventData } from '@/lib/declaration';
 import { formatDateTime, normalizeUrl } from '@/lib/utils';

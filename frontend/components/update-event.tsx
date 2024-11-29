@@ -1,6 +1,6 @@
 import { EventData } from '@/lib/declaration';
 import EventForm from './event-form';
-import { getEventById } from '@/lib/action';
+import { getEventById } from '@/lib/event-data';
 import { EventFormSchema } from '@/lib/zod';
 import { z } from 'zod';
 
