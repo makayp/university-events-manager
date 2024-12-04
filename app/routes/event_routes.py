@@ -7,6 +7,7 @@ import re, jwt, os
 from math import ceil
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
+from datetime import datetime
 
 event_bp = Blueprint('events', __name__, url_prefix="/api/events")
 
@@ -27,7 +28,7 @@ def get_upcoming_events():
     current_time = datetime.now(timezone.utc)
     events_query = (
     Event.query
-        .filter(Event.start_time > current_time)  # Use .filter() for complex conditions
+        .filter(Event.start_time > current_time)
         .order_by(Event.start_time.asc())
     )
 
@@ -37,9 +38,12 @@ def get_upcoming_events():
 
     total_pages = ceil(total_events / per_page)
 
-
-
     upcoming_events = []
+
+    registration_counts = db.session.query(
+    EventRegister.event_id, func.count(EventRegister.user_id).label('total_registered')
+    ).group_by(EventRegister.event_id).all()
+    counts_dict = {row.event_id: row.total_registered for row in registration_counts}
 
     for event in events:
         try:
@@ -78,6 +82,7 @@ def get_upcoming_events():
             "start_time": event.start_time,
             "end_time": event.end_time,
             "location": event.location,
+            "total_registered": counts_dict.get(event.id, 0),
             "image_url": event.image_url
         })
 
@@ -147,7 +152,18 @@ def create_event(user):
 def get_event(event_id):
     try:
         event = Event.query.filter_by(id=event_id).first()
-
+        reg_events = EventRegister.query.filter_by(event_id=event_id).all()
+        registered_users= []
+        for r in reg_events:
+            registered_users.append(
+                {
+                "user_id": r.user.id,
+                "email": r.user.email,
+                "first_name": r.user.first_name,
+                "last_name": r.user.last_name,
+                "image_url": r.user.image_url
+            }
+            )
         if event is None:
             return jsonify({
                 "success": False,
@@ -197,7 +213,8 @@ def get_event(event_id):
                 "end_time": event.end_time,
                 "location": event.location,
                 "image_url": event.image_url
-            }
+            },
+            "registered_users" : registered_users
         }), 200
 
     except Exception as e:
@@ -205,11 +222,18 @@ def get_event(event_id):
             "success": False,
             "message": f"An error occurred while retrieving the event: {str(e)}"
         }), 500
-    
-from datetime import datetime
 
 @event_bp.route('/search', methods=["GET"])
 def search_events():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', DEFAULT_PER_PAGE, type=int)
+    per_page = min(per_page, MAX_PER_PAGE)
+    if page < 1 or per_page < 1:
+        return jsonify({
+            "success": False,
+            "message": "per_page and page must be positive integers."
+        }), 400
+    
     search_text = request.args.get("text")
     field = request.args.get("field") 
     filter_expired = request.args.get("expired", "false").lower() == "true"
@@ -226,14 +250,19 @@ def search_events():
         field_column.ilike(f"%{search_text}%") |  # Partial matching
         (func.soundex(field_column) == func.soundex(search_text))  # Phonetic matching
     )
-    
-    if not filter_expired:
-        query = query.filter(Event.end_time > datetime.now(timezone.utc).isoformat())
-    
-    events = query.limit(DEFAULT_PER_PAGE).all()
 
-    if not events:
-        return jsonify({"success": True, "message": "No matching events found.", "events": []}), 200
+    if not filter_expired:
+        query = query.filter(Event.start_time > datetime.now(timezone.utc).isoformat())
+
+    total_events = query.count()
+    events = query.offset((page - 1) * per_page).limit(per_page).all()
+
+    total_pages = ceil(total_events / per_page)
+
+    registration_counts = db.session.query(
+    EventRegister.event_id, func.count(EventRegister.user_id).label('total_registered')
+    ).group_by(EventRegister.event_id).all()
+    counts_dict = {row.event_id: row.total_registered for row in registration_counts}
 
     events_list = [
     {
@@ -245,6 +274,7 @@ def search_events():
         "location": event.location,
         "created_at": event.created_at,
         "image_url": event.image_url,
+        "total_registered": counts_dict.get(event.id, 0),
         "user_info": {
             "user_id": event.user.id,
             "email": event.user.email,
@@ -253,8 +283,13 @@ def search_events():
             "image_url": event.user.image_url
         } if event.user else None  # Add user info if it exists, else empty dictionary
     } for event in events]
-    
-    return jsonify({"success": True, "message": "Events found.", "events": events_list}), 200
+
+    return jsonify({"success": True, "events": events_list, "pagination" : {
+            "current_page" : page,
+            "per_page" : per_page,
+            "total_events" : total_events,
+            "total_pages" : total_pages
+        }}), 200
 
 @event_bp.route('/<int:event_id>/update', methods=['PUT'])
 @jwt_required
@@ -395,79 +430,103 @@ def unregister_event(user, event_id):
 @event_bp.route("/user_created_events", methods=['GET'])
 @jwt_required
 def get_user_created_events(user):
-    try:
-        events = Event.query.filter_by(user_id=user.id).all()
-
-        if not events:
-            return jsonify({
-                "success": False,
-                "message": "No events found for this user."
-            }), 404
-
-        event_list = []
-        for event in events:
-            event_details = {
-                "id": event.id,
-                "user_info": {
-                    "user_id": event.user.id,
-                    "email": event.user.email,
-                    "first_name": event.user.first_name,
-                    "last_name": event.user.last_name,
-                    "image_url": event.user.image_url
-                },
-                "event_name": event.event_name,
-                "description": event.description,
-                "start_time": event.start_time,
-                "end_time": event.end_time,
-                "location": event.location,
-                "image_url": event.image_url
-            }
-            event_list.append(event_details)
-
-        return jsonify({
-            "success": True,
-            "message": "Events retrieved successfully.",
-            "events": event_list
-        }), 200
-
-    except Exception as e:
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', DEFAULT_PER_PAGE, type=int)
+    per_page = min(per_page, MAX_PER_PAGE)
+    if page < 1 or per_page < 1:
         return jsonify({
             "success": False,
-            "message": str(e)
-        }), 500
+            "message": "per_page and page must be positive integers."
+        }), 400
+    
+    query = Event.query.filter_by(user_id=user.id)
+
+    total_events = query.count()
+    events = query.offset((page - 1) * per_page).limit(per_page).all()
+
+    total_pages = ceil(total_events / per_page)
+
+    registration_counts = db.session.query(
+    EventRegister.event_id, func.count(EventRegister.user_id).label('total_registered')
+    ).group_by(EventRegister.event_id).all()
+    counts_dict = {row.event_id: row.total_registered for row in registration_counts}
+
+    events_list = [
+    {
+        "id": event.id,
+        "event_name": event.event_name,
+        "description": event.description,
+        "start_time": event.start_time,
+        "end_time": event.end_time,
+        "location": event.location,
+        "created_at": event.created_at,
+        "image_url": event.image_url,
+        "total_registered": counts_dict.get(event.id, 0),
+        "user_info": {
+            "user_id": event.user.id,
+            "email": event.user.email,
+            "first_name": event.user.first_name,
+            "last_name": event.user.last_name,
+            "image_url": event.user.image_url
+        } if event.user else None  # Add user info if it exists, else empty dictionary
+    } for event in events]
+
+    return jsonify({"success": True, "events": events_list, "pagination" : {
+            "current_page" : page,
+            "per_page" : per_page,
+            "total_events" : total_events,
+            "total_pages" : total_pages
+        }}), 200
 
 @event_bp.route('/registered', methods=['GET'])
 @jwt_required
 def get_user_registered_events(user):
-    registrations = EventRegister.query.filter_by(user_id=user.id).all()
-
-    if not registrations:
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', DEFAULT_PER_PAGE, type=int)
+    per_page = min(per_page, MAX_PER_PAGE)
+    if page < 1 or per_page < 1:
         return jsonify({
             "success": False,
-            "message": "No registrations found for this user."
-        }), 404
+            "message": "per_page and page must be positive integers."
+        }), 400
     
-    event_list = [
-        {
-            "id": reg.event.id,
-            "user_info": {
-                "user_id": reg.user.id,
-                "email": reg.user.email,
-                "first_name": reg.user.first_name,
-                "last_name": reg.user.last_name,
-                "image_url": reg.user.image_url
-            },
-            "event_name": reg.event.event_name,
-            "description": reg.event.description,
-            "start_time": reg.event.start_time,
-            "end_time": reg.event.end_time,
-            "location": reg.event.location,
-            "image_url": reg.event.image_url
-        } for reg in registrations
-    ]
-    
-    return jsonify({
-        "success": True,
-        "message": "Registered events retrieved successfully.",
-        "events": event_list
-    }), 200
+    reg_events = EventRegister.query.filter_by(user_id=user.id).all()
+    reg_events = [event.event_id for event in reg_events]
+    query = Event.query.filter(Event.id.in_(reg_events))
+
+    total_events = query.count()
+    events = query.offset((page - 1) * per_page).limit(per_page).all()
+
+    total_pages = ceil(total_events / per_page)
+
+    registration_counts = db.session.query(
+    EventRegister.event_id, func.count(EventRegister.user_id).label('total_registered')
+    ).group_by(EventRegister.event_id).all()
+    counts_dict = {row.event_id: row.total_registered for row in registration_counts}
+
+    events_list = [
+    {
+        "id": event.id,
+        "event_name": event.event_name,
+        "description": event.description,
+        "start_time": event.start_time,
+        "end_time": event.end_time,
+        "location": event.location,
+        "created_at": event.created_at,
+        "image_url": event.image_url,
+        "total_registered": counts_dict.get(event.id, 0),
+        "user_info": {
+            "user_id": event.user.id,
+            "email": event.user.email,
+            "first_name": event.user.first_name,
+            "last_name": event.user.last_name,
+            "image_url": event.user.image_url
+        } if event.user else None  # Add user info if it exists, else empty dictionary
+    } for event in events]
+
+    return jsonify({"success": True, "events": events_list, "pagination" : {
+            "current_page" : page,
+            "per_page" : per_page,
+            "total_events" : total_events,
+            "total_pages" : total_pages
+        }}), 200

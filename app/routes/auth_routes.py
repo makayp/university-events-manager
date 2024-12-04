@@ -115,7 +115,7 @@ def register():
     password = data.get('password')
     first_name = data.get('firstName')
     last_name = data.get('lastName')
-    image_url = data.get("image_url")
+    image_url = data.get("image_url", "")
 
     if not email or not is_valid_email(email):
         return jsonify({

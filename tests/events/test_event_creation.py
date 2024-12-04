@@ -38,7 +38,6 @@ def test_event_creation(client):
         }
     )
 
-    # Assertions
     assert response.status_code == 201
 
     response = client.post(
@@ -69,7 +68,6 @@ def test_event_creation(client):
     
     data = response.get_json()
     print(data)
-    print(data.get("event").get("id"))
 
     assert int(data.get("event").get("id")) == 1
 
@@ -138,7 +136,37 @@ def test_event_creation(client):
     response = client.post(
         '/api/events/create',
         json={
-        "event_name": "Test Event",
+        "event_name": "Test Event1",
+        "description": "This is a test event.",
+        "start_time": start,
+        "end_time": end,
+        "location": "Test Location",
+        "image_url": "http://example.com/image.png"
+    },
+        headers={
+            'Authorization': f'Bearer {token}'
+        }
+    )
+
+    response = client.post(
+        '/api/events/create',
+        json={
+        "event_name": "Test Event2",
+        "description": "This is a test event.",
+        "start_time": start,
+        "end_time": end,
+        "location": "Test Location",
+        "image_url": "http://example.com/image.png"
+    },
+        headers={
+            'Authorization': f'Bearer {token}'
+        }
+    )
+
+    response = client.post(
+        '/api/events/create',
+        json={
+        "event_name": "Test Event3",
         "description": "This is a test event.",
         "start_time": start,
         "end_time": end,
@@ -165,10 +193,18 @@ def test_event_creation(client):
         }
     )
 
+    response = client.post(
+        '/api/events/2/register',
+        headers={
+            'Authorization': f'Bearer {token}'
+        }
+    )
+
     print(response.get_json())
 
     assert response.status_code == 201
 
+    print("GEEE")
     response = client.get(
         '/api/events/registered',
         headers={
@@ -198,9 +234,10 @@ def test_event_creation(client):
         }
     )
 
+    print("REGISTERED")
     print(response.get_json())
 
-    assert response.status_code == 404
+    assert response.status_code == 200
 
     response = client.get(
         '/api/events/user_created_events',
@@ -209,6 +246,93 @@ def test_event_creation(client):
         }
     )
 
+    print("CREATED")
     print(response.get_json())
 
     assert response.status_code == 200
+
+    response = client.get(
+        '/api/events/2')
+    
+    print(response.get_json())
+
+def test_single_event(client):
+    response = client.post('/api/auth/register', 
+        json={
+            "email": "User+tag@mail.com",
+            "password": "1a!B1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": "http://..."
+        })
+
+    token = response.get_json()["token"]
+    print(token)
+    # Prepare test data
+    start = (datetime.now(timezone.utc) + timedelta(days=1)).isoformat()
+    end = (datetime.now(timezone.utc) + timedelta(days=2)).isoformat()
+    print(start, end)
+    
+    # Send POST request with valid data
+    response = client.post(
+        '/api/events/create',
+        json={
+        "event_name": "Test Event",
+        "description": "This is a test event.",
+        "start_time": start,
+        "end_time": end,
+        "location": "Test Location",
+        "image_url": "http://example.com/image.png"
+    },
+        headers={
+            'Authorization': f'Bearer {token}'
+        }
+    )
+
+    c1 = client.post('/api/auth/register', 
+        json={
+            "email": "User1@mail.com",
+            "password": "1a!B1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": "http://..."
+        })
+    c2 = client.post('/api/auth/register', 
+        json={
+            "email": "User2@mail.com",
+            "password": "1a!B1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": "http://..."
+        })
+    c3 = client.post('/api/auth/register', 
+        json={
+            "email": "User3@mail.com",
+            "password": "1a!B1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": "http://..."
+        })
+    
+    client.post(
+        '/api/events/1/register',
+        headers={
+            'Authorization': f'Bearer {c1.get_json()["token"]}'
+        }
+    )
+    client.post(
+        '/api/events/1/register',
+        headers={
+            'Authorization': f'Bearer {c2.get_json()["token"]}'
+        }
+    )
+    client.post(
+        '/api/events/1/register',
+        headers={
+            'Authorization': f'Bearer {c3.get_json()["token"]}'
+        }
+    )
+
+    response = client.get('/api/events/1')
+
+    print(response.get_json())

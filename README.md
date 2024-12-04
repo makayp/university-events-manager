@@ -144,8 +144,8 @@ Make sure that the JWT_SECRET is set for production.
 
 ### `GET /api/events/search`
 #### Query Parameters:
-- `text`: string (required)
-- `field`: string (required, options: `event_name`, `location`, `description`)
+- `text`: string (optional)
+- `field`: string (optional, options: `event_name`, `location`, `description`)
 - `expired`: string (optional, default: `false`)
 
 #### Response:

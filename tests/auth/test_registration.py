@@ -2,7 +2,7 @@ import pytest
 from app import create_app, db
 from app.models import User
 import random, string, json
-from tests.resources import *
+from tests.resources import emails_test_set_path, name_test_set_path, password_test_set_path
 
 def test_registration_success(client):
     response = client.post('/api/auth/register', 
