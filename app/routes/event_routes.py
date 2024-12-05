@@ -212,7 +212,8 @@ def get_event(event_id):
                 "start_time": event.start_time,
                 "end_time": event.end_time,
                 "location": event.location,
-                "image_url": event.image_url
+                "image_url": event.image_url,
+                "total_registerd" : len(registered_users)
             },
             "registered_users" : registered_users
         }), 200
