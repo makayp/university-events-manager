@@ -153,7 +153,7 @@ def get_event(event_id):
     try:
         event = Event.query.filter_by(id=event_id).first()
         reg_events = EventRegister.query.filter_by(event_id=event_id).all()
-        registered_users= []
+        registered_users = []
         for r in reg_events:
             registered_users.append(
                 {
@@ -349,7 +349,6 @@ def update_event(user, event_id):
 @jwt_required
 def delete_event(user, event_id):
     event = Event.query.filter_by(id=event_id).first()
-
     if event is None:
         return jsonify({
             "success": False,

@@ -336,3 +336,129 @@ def test_single_event(client):
     response = client.get('/api/events/1')
 
     print(response.get_json())
+
+def test_deletion(client):
+    print("\nStarting Deletion")
+    print("Registering Users")
+    c1 = client.post('/api/auth/register', 
+        json={
+            "email": "User1@mail.com",
+            "password": "1a!B1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": "http://..."
+        })
+    c2 = client.post('/api/auth/register', 
+        json={
+            "email": "User2@mail.com",
+            "password": "1a!B1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": "http://..."
+        })
+    c3 = client.post('/api/auth/register', 
+        json={
+            "email": "User3@mail.com",
+            "password": "1a!B1234",
+            "firstName": "John",
+            "lastName": "Smith",
+            "image_url": "http://..."
+        })
+
+    start = (datetime.now(timezone.utc) + timedelta(days=1)).isoformat()
+    end = (datetime.now(timezone.utc) + timedelta(days=2)).isoformat()
+
+    print("Making Event")
+    response = client.post(
+        '/api/events/create',
+        json={
+        "event_name": "Test Event",
+        "description": "This is a test event.",
+        "start_time": start,
+        "end_time": end,
+        "location": "Test Location",
+        "image_url": "http://example.com/image.png"
+    },
+        headers={
+            'Authorization': f'Bearer {c1.get_json()["token"]}'
+        }
+    )
+
+    print("Registering users for event")
+    out = client.post(
+        '/api/events/1/register',
+        headers={
+            'Authorization': f'Bearer {c1.get_json()["token"]}'
+        }
+    )
+    print(out.get_json()["message"])
+    out = client.get(
+        '/api/events/registered',
+        headers={
+            'Authorization': f'Bearer {c1.get_json()["token"]}'
+        }
+    )
+    print(out.get_json()['events'])
+
+    out = client.post(
+        '/api/events/1/register',
+        headers={
+            'Authorization': f'Bearer {c2.get_json()["token"]}'
+        }
+    )
+    print(out.get_json()["message"])
+    out = client.get(
+        '/api/events/registered',
+        headers={
+            'Authorization': f'Bearer {c1.get_json()["token"]}'
+        }
+    )
+    print(out.get_json()["events"])
+
+    out = client.post(
+        '/api/events/1/register',
+        headers={
+            'Authorization': f'Bearer {c3.get_json()["token"]}'
+        }
+    )
+    print(out.get_json()["message"])
+    out = client.get(
+        '/api/events/registered',
+        headers={
+            'Authorization': f'Bearer {c1.get_json()["token"]}'
+        }
+    )
+    print(out.get_json()["events"])
+
+    response = client.delete(
+        '/api/events/1/delete',
+        headers={
+            'Authorization': f'Bearer {c1.get_json()["token"]}'
+        }
+    )
+
+    print(response.get_json())
+
+    out = client.get(
+        '/api/events/registered',
+        headers={
+            'Authorization': f'Bearer {c1.get_json()["token"]}'
+        }
+    )
+    print(out.get_json()['events'])
+
+    out = client.get(
+        '/api/events/registered',
+        headers={
+            'Authorization': f'Bearer {c1.get_json()["token"]}'
+        }
+    )
+    print(out.get_json()["events"])
+
+    out = client.get(
+        '/api/events/registered',
+        headers={
+            'Authorization': f'Bearer {c1.get_json()["token"]}'
+        }
+    )
+    print(out.get_json()["events"])

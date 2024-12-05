@@ -1,10 +1,11 @@
 from datetime import datetime, timezone
-from sqlalchemy import PrimaryKeyConstraint, String, Integer, Column, Text, ForeignKey, event
+from sqlalchemy import PrimaryKeyConstraint, String, Integer, Column, Text, ForeignKey, event, UniqueConstraint
 from sqlalchemy.engine import Engine
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 import random, string
+
 
 SALT_LEN = 16
 
@@ -56,6 +57,10 @@ class User(db.Model):
         self.image_url = image_url
         self.created_at = datetime.now(timezone.utc).isoformat()
 
+    __table_args__ = (
+        UniqueConstraint('email', name='uq_user_email'),
+    )
+
     def __repr__(self):
         return f"<User {self.email}>"
 
@@ -82,7 +87,7 @@ class Event(db.Model):
     __tablename__ = 'event'
     
     id = Column(Integer, primary_key=True, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'), nullable=True)
+    user_id = Column(Integer, ForeignKey('user.id', ondelete='SET NULL'), nullable=True)
     event_name = Column(Text, nullable=False)
     description = Column(Text, nullable=True)
     start_time = Column(String, nullable=False)  # ISO format text for SQLite
@@ -91,7 +96,6 @@ class Event(db.Model):
     created_at = Column(String, nullable=False)
     image_url = Column(Text, nullable=True)
 
-    # Relationship to User
     user = relationship('User', backref='events')
 
     def __init__(self, event_name: str, description: str, start_time:str, end_time:str, location:str, image_url:str, user_id):
@@ -110,15 +114,15 @@ class Event(db.Model):
 class EventRegister(db.Model):
     __tablename__ = 'event_register'
 
-    user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
-    event_id = Column(Integer, ForeignKey('event.id', ondelete='CASCADE'), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE', name="fk_user_id"), nullable=False)
+    event_id = Column(Integer, ForeignKey('event.id', ondelete='CASCADE', name="fk_event_id"), nullable=False)
 
     __table_args__ = (
         PrimaryKeyConstraint('user_id', 'event_id'),  # Composite primary key
     )
 
-    user = relationship('User', backref='event_register')
-    event = relationship('Event', backref='event_register')
+    user = relationship('User', backref=backref('event_register', cascade="all, delete-orphan"))
+    event = relationship('Event', backref=backref('event_register', cascade="all, delete-orphan"))
 
     def __repr__(self):
         return f"<EventRegister user_id={self.user_id}, event_id={self.event_id}>"
