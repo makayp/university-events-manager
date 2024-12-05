@@ -1,8 +1,9 @@
 'server-only';
 
 import { auth } from '@/auth';
-import { EventData } from './declaration';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
+import { DBEvent, Event, GetRegisteredEventsProps } from './declaration';
+import { filterEvents } from './utils';
 
 export async function getEvents({
   limit,
@@ -27,16 +28,14 @@ export async function getEvents({
         `${process.env.SERVER_ENDPOINT}/events/upcoming?per_page=${limit}&page=${page}`
       );
 
-    const data: { events: EventData[]; pagination: { total_pages: number } } =
-      await res.json();
+    const data: DBEvent = await res.json();
 
     if (!res.ok) return { error: 'Something went wrong. Please try again' };
 
-    if (query) {
-      return { events: data.events };
-    }
-
-    return { events: data.events, totalPages: data.pagination.total_pages };
+    return {
+      events: filterEvents(data.events, 'upcoming'),
+      totalPages: data.pagination.total_pages,
+    };
   } catch (error) {
     console.log(error);
     return {
@@ -64,17 +63,21 @@ export async function getEventById(id: string) {
   return data.event;
 }
 
-export async function getRegisteredEvents() {
+export async function getRegisteredEvents({
+  limit = 10,
+  page,
+  status = 'all',
+}: GetRegisteredEventsProps) {
   const session = await auth();
 
   if (!session) {
     console.log('no session');
-    redirect('/login');
+    return { events: [], totalPages: 0 };
   }
 
   try {
     const res = await fetch(
-      `${process.env.SERVER_ENDPOINT}/events/registered`,
+      `${process.env.SERVER_ENDPOINT}/events/registered?page=${page}&per_page=${limit}`,
       {
         method: 'GET',
         headers: {
@@ -83,16 +86,26 @@ export async function getRegisteredEvents() {
       }
     );
 
-    const data = await res.json();
+    const data: DBEvent = await res.json();
 
-    if (res.status == 404) return [];
+    if (res.status == 404) return { events: [], totalPages: 0 };
 
-    if (!res.ok) throw new Error('Something went wrong. Please try again');
+    if (!res.ok) throw Error;
 
-    return data.events;
+    const filteredEvents = filterEvents(data.events, status);
+
+    // let totalPages = Math.ceil(filteredEvents.length / limit);
+
+    // if (page) {
+    //   const start = limit * (page - 1);
+    //   const end = page * limit;
+
+    console.log(data.pagination);
+
+    return { events: filteredEvents, totalPages: data.pagination.total_pages };
   } catch (error) {
     console.log(error);
-    throw new Error('Server error. Please try again later.');
+    throw Error('Something went wrong. Please try again');
   }
 }
 
@@ -103,8 +116,11 @@ export async function checkIsRegistered({ eventId }: { eventId: string }) {
     return false;
   }
 
-  const registeredEvents: EventData[] = await getRegisteredEvents();
-  const isRegistered = registeredEvents.some((event) => event.id == eventId);
+  const registeredEvents: { events: Event[] } = await getRegisteredEvents({});
+
+  const isRegistered = registeredEvents.events.some(
+    (event) => event.id == eventId
+  );
 
   return isRegistered;
 }

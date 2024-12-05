@@ -2,7 +2,7 @@ import EventDropdown from '@/components/event-dropdown';
 import { Button } from '@/components/ui/button';
 import { getEventById } from '@/lib/event-data';
 
-import { EventData } from '@/lib/declaration';
+import { Event } from '@/lib/declaration';
 import { formatDateTime, normalizeUrl } from '@/lib/utils';
 import {
   ArrowRightIcon,
@@ -29,7 +29,7 @@ export default async function Page({
 }) {
   const { id } = await params;
 
-  const event: EventData = await getEventById(id);
+  const event: Event = await getEventById(id);
 
   const organiser = event.user_info;
 
@@ -65,16 +65,12 @@ export default async function Page({
                 <p className='flex items-center gap-2'>
                   <ClockIcon className='size-5 text-secondary/80' />
                   <span className=''>Starts:</span>{' '}
-                  <span>
-                    {formatDateTime(new Date(event.start_time)).dateTime}
-                  </span>
+                  <span>{formatDateTime(event.start_time).dateTime}</span>
                 </p>
                 <p className='flex items-center gap-2'>
                   <CalendarDateRangeIcon className='size-5 text-secondary/80' />
                   <span className=''>Ends:</span>{' '}
-                  <span>
-                    {formatDateTime(new Date(event.end_time)).dateTime}
-                  </span>
+                  <span>{formatDateTime(event.end_time).dateTime}</span>
                 </p>
                 <p className=' whitespace-nowrap flex items-center gap-2'>
                   <MapPinIcon className='size-5 text-secondary/80' />

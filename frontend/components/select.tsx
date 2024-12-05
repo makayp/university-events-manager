@@ -9,9 +9,8 @@ import {
   Select as SelectWrapper,
 } from '@/components/ui/select';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { debounce } from './search';
 
 const searchFields = [
   { name: 'Event name', value: 'event_name' },
@@ -28,19 +27,16 @@ export function Select({ className }: { className?: string }) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleSearch = useCallback(
-    debounce(function (selected: string) {
-      const params = new URLSearchParams(searchParams);
+  function handleSearch(selected: string) {
+    const params = new URLSearchParams(searchParams);
 
-      if (selected.trim()) {
-        params.set('searchBy', selected);
-        params.set('page', '1');
-      }
+    if (selected.trim()) {
+      params.set('searchBy', selected);
+      params.set('page', '1');
+    }
 
-      router.push(`${pathname}?${params.toString()}`, { scroll: false });
-    }, 500),
-    [pathname, router, searchParams]
-  );
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  }
 
   function onSelectChange(e: string) {
     setSearchBy(e);
@@ -63,7 +59,7 @@ export function Select({ className }: { className?: string }) {
             <SelectItem
               key={field.name}
               value={field.value}
-              className='focus:bg-secondary/10 flex'
+              className='focus:bg-gray-100 flex'
             >
               {field.name}
             </SelectItem>

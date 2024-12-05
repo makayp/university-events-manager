@@ -10,6 +10,7 @@ export default function ImageUploader({
   setImage,
 }: {
   imageUrl: string;
+  // eslint-disable-next-line no-unused-vars
   onFieldChange: (value: string) => void;
   setImage: Dispatch<SetStateAction<File | undefined>>;
 }) {

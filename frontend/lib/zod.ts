@@ -45,8 +45,8 @@ export const EventFormSchema = z
     description: z
       .string()
       .trim()
-      .min(3, 'Description must be at least 3 characters')
-      .max(400, 'Description must be less than 400 characters'),
+      .min(10, 'Description must be at least 10 characters')
+      .max(1000, 'Description cannot exceed 1000 characters'),
     image_url: z.string().trim().min(1, 'Please select an image to upload'),
     location: z
       .string()

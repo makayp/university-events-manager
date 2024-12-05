@@ -1,6 +1,10 @@
 'use client';
 
 import useBreakpoint from '@/hooks/use-breakpoint';
+import { DBUser } from '@/lib/declaration';
+import { Edit, Settings } from 'lucide-react';
+import Link from 'next/link';
+import LogoutButton from './auth/logout-button';
 import {
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -9,13 +13,9 @@ import {
   DropdownMenuSeparator,
 } from './ui/dropdown-menu';
 import UserAvatar from './user-avatar';
-import Link from 'next/link';
-import { Edit, Settings } from 'lucide-react';
-import LogoutButton from './auth/logout-button';
-import { User } from 'next-auth';
 
-export default function DropdownContent({ user }: { user: User }) {
-  const isMobile = useBreakpoint();
+export default function DropdownContent({ user }: { user: DBUser }) {
+  const { isMobile } = useBreakpoint();
 
   return (
     <DropdownMenuContent
@@ -28,7 +28,9 @@ export default function DropdownContent({ user }: { user: User }) {
         <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
           <UserAvatar imageSrc={user.image_url || ''} />
           <div className='grid flex-1 text-left text-sm leading-tight'>
-            <span className='truncate font-semibold'>{user.first_name}</span>
+            <span className='truncate font-semibold'>
+              {user.first_name} {user.last_name}
+            </span>
             <span className='truncate text-xs'>{user.email}</span>
           </div>
         </div>

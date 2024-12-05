@@ -1,4 +1,4 @@
-import { EventData } from '@/lib/declaration';
+import { Event } from '@/lib/declaration';
 import Card from './card';
 
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
@@ -7,7 +7,7 @@ export async function EventSlider({
   events,
   className,
 }: {
-  events: EventData[];
+  events: Event[];
   className?: string;
 }) {
   return (

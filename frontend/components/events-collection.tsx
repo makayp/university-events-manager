@@ -1,4 +1,4 @@
-import { EventData } from '@/lib/declaration';
+import { Event } from '@/lib/declaration';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 import Card from './card';
@@ -11,7 +11,7 @@ export default function EventsCollection({
   totalPages,
   className,
 }: {
-  events: EventData[];
+  events: Event[];
   paginate?: boolean;
   totalPages: number | undefined;
   className?: string;

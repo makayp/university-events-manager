@@ -40,7 +40,7 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
 
             return (
               <PaginationNumber
-                key={page}
+                key={index}
                 href={createPageURL(page)}
                 page={page}
                 position={position}
@@ -49,7 +49,6 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
             );
           })}
         </div>
-
         <PaginationArrow
           direction='right'
           href={createPageURL(currentPage + 1)}
@@ -71,14 +70,19 @@ function PaginationNumber({
   position?: 'first' | 'last' | 'middle' | 'single';
   isActive: boolean;
 }) {
+  const pathname = usePathname();
+
+  const isOnDashboard = pathname.startsWith('/dashboard');
+
   const className = clsx(
     'flex h-10 w-10 items-center justify-center text-sm border',
     {
       'rounded-l-md': position === 'first' || position === 'single',
       'rounded-r-md': position === 'last' || position === 'single',
-      'z-10 bg-primary border-primary text-white': isActive,
+      'z-10 bg-primary border-primary text-white': isActive && !isOnDashboard,
       'hover:bg-gray-100': !isActive && position !== 'middle',
       'text-gray-300': position === 'middle',
+      'z-10 bg-blue-600 border-blue-600 text-white': isActive && isOnDashboard,
     }
   );
 

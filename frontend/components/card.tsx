@@ -1,10 +1,10 @@
-import { EventData } from '@/lib/declaration';
+import { Event } from '@/lib/declaration';
 import { formatDateTime, truncateText } from '@/lib/utils';
 import { MapPinIcon, UserIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import previewImage from '@/public/images/default-fallback-image.png';
 
-export default async function Card({ event }: { event: EventData }) {
+export default async function Card({ event }: { event: Event }) {
   const organiser = event.user_info;
 
   const imageUrl = event.image_url || previewImage.src;
@@ -24,7 +24,7 @@ export default async function Card({ event }: { event: EventData }) {
         <Link href={`/events/${event.id}`} className='flex-1 flex flex-col'>
           <div className='flex flex-col gap-1 p-3 flex-1'>
             <p className='text-sm text-gray-500'>
-              {formatDateTime(new Date(event.start_time)).dateTime}
+              {formatDateTime(event.start_time).dateTime}
             </p>
             <h1 className='font-medium'>
               {truncateText(event.event_name, 40)}

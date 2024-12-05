@@ -1,7 +1,7 @@
 import { getEvents } from '@/lib/event-data';
 import EventsCollection from './events-collection';
 import { EventSlider } from './event-carousel';
-import { EventData } from '@/lib/declaration';
+import { Event } from '@/lib/declaration';
 
 export default async function EventsList({
   type,
@@ -18,7 +18,7 @@ export default async function EventsList({
   query?: string;
   field?: string;
 }) {
-  const data: { events?: EventData[]; totalPages?: number } & {
+  const data: { events?: Event[]; totalPages?: number } & {
     error?: string;
   } = await getEvents({
     limit: numEvents,
@@ -40,11 +40,7 @@ export default async function EventsList({
   if (events.length < 1)
     return (
       <div className='flex items-center justify-center h-36'>
-        {query ? (
-          <p>Could not find any event matching your search.</p>
-        ) : (
-          <p>No events currently, check back later.</p>
-        )}
+        <p>No event to show.</p>
       </div>
     );
 

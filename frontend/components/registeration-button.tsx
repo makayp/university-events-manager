@@ -50,8 +50,6 @@ export default function RegisterationButton({
     });
   }
 
-  console.log(isRegistered);
-
   return (
     <Button
       size='lg'

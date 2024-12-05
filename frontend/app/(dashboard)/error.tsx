@@ -24,8 +24,9 @@ export default function Error() {
       </div>
 
       <Button
+        className='bg-blue-600 hover:bg-blue-600/90'
         onClick={() => {
-          router.push('/');
+          router.push('/dashboard');
         }}
       >
         Try again

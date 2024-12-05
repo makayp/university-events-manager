@@ -78,7 +78,7 @@ export function SignupForm() {
                 name='first_name'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Firstname</FormLabel>
+                    <FormLabel>First name</FormLabel>
                     <FormControl>
                       <Input placeholder='Enter firstname' {...field} />
                     </FormControl>
@@ -92,7 +92,7 @@ export function SignupForm() {
                 name='last_name'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Lastname</FormLabel>
+                    <FormLabel>Last name</FormLabel>
                     <FormControl>
                       <Input placeholder='Enter lastname' {...field} />
                     </FormControl>

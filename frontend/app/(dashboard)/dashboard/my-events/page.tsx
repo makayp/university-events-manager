@@ -1,8 +1,8 @@
 export default function Page() {
   return (
-    <section className='h-full py-10 text-center'>
-      <div>
-        <h1 className='text-xl'>Coming soon.</h1>
+    <section className='relative min-h-full'>
+      <div className='space-y-10 grow'>
+        <h1 className='text-xl font-medium'>My Events</h1>
       </div>
     </section>
   );

@@ -144,11 +144,19 @@ export default function EventForm({
             render={({ field }) => (
               <FormItem className='w-full'>
                 <FormControl>
-                  <Textarea
-                    placeholder='Description'
-                    {...field}
-                    className='textarea rounded-2xl'
-                  />
+                  <div className='relative'>
+                    <Textarea
+                      placeholder='Description'
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.value.slice(0, 1000))
+                      }
+                      className='textarea rounded-2xl'
+                    />
+                    <span className='absolute right-0 bottom-0 text-xs text-gray-500 bg-slate-50'>
+                      {field.value.length}/1000
+                    </span>
+                  </div>
                 </FormControl>
 
                 <FormMessage />

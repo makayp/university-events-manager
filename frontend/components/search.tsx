@@ -6,7 +6,10 @@ import { Input } from './ui/input';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { Select } from './select';
+import clsx from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
+// eslint-disable-next-line no-unused-vars
 export function debounce<T extends (...args: any[]) => void>(
   fn: T,
   delay: number
@@ -18,7 +21,15 @@ export function debounce<T extends (...args: any[]) => void>(
   };
 }
 
-export default function Search() {
+export default function Search({
+  center,
+  rounded,
+  className,
+}: {
+  center?: boolean;
+  rounded?: boolean;
+  className?: string;
+}) {
   const searchParams = useSearchParams();
   const [searchText, setSearchText] = useState<string>(
     searchParams.get('query') || ''
@@ -49,18 +60,28 @@ export default function Search() {
   }
 
   return (
-    <div className='flex '>
-      <div className='relative flex items-center w-full  max-w-3xl mx-auto'>
-        <MagnifyingGlassIcon className='size-5 top-1/2 -translate-y-1/2 left-3 absolute opacity-60' />
-        <Input
-          placeholder='Search'
-          value={searchText}
-          onChange={onInputChange}
-          className='rounded-full pl-10 h-10 lg:h-10 shadow-none text-gray-700 border-noneh bg-gray-50k'
-        />
+    <div
+      className={twMerge(
+        clsx('relative flex items-center w-full', {
+          'mx-auto': center,
+        }),
+        className
+      )}
+    >
+      <MagnifyingGlassIcon className='size-5 top-1/2 -translate-y-1/2 left-3 absolute opacity-60' />
+      <Input
+        placeholder='Search'
+        value={searchText}
+        onChange={onInputChange}
+        className={clsx(
+          'pl-10 h-10 lg:h-10 shadow-none text-gray-700 border-noneh bg-gray-50k',
+          {
+            'rounded-full': rounded,
+          }
+        )}
+      />
 
-        <Select />
-      </div>
+      <Select />
     </div>
   );
 }

@@ -4,9 +4,9 @@ import { Suspense } from 'react';
 
 export default function Page() {
   return (
-    <section className='relative min-h-full py-5'>
+    <section className='relative min-h-full'>
       <div className='space-y-10 grow'>
-        <h1 className='text-2xl font-medium'>Update Account</h1>
+        <h1 className='text-xl'>Account</h1>
         <Suspense
           fallback={
             <div className='flex items-center justify-center absolute inset-0'>

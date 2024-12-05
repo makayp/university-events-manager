@@ -219,6 +219,9 @@ export async function deleteEvent(eventId: string) {
     );
 
     if (!res.ok) {
+      console.log(eventId, session);
+
+      // console.log(await res.json());
       return { error: 'Something went wrong. Try again' };
     }
 

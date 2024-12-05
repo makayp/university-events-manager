@@ -12,12 +12,12 @@ import { SetStateAction } from 'react';
 export default function ConfirmDialog({
   isOpen,
   setIsOpen,
-  action,
+  warning,
   children,
 }: {
   isOpen: boolean;
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;
-  action: string;
+  warning: string;
   children: React.ReactNode;
 }) {
   return (
@@ -26,8 +26,7 @@ export default function ConfirmDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            event&apos;s data.
+            This action cannot be undone. {warning}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

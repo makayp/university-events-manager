@@ -3,9 +3,7 @@
 import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { profileLinks } from './user-dropdown';
-
-const links = profileLinks;
+import { DASHBOARD_LINKS } from '@/lib/constants';
 
 export default function SideNav({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -21,8 +19,10 @@ export default function SideNav({ children }: { children: React.ReactNode }) {
         </div>
       </Link>
       <div className='flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2'>
-        {links.map((link) => {
+        {DASHBOARD_LINKS.map((link) => {
           const LinkIcon = link.icon;
+
+          const name = link.name === 'Dashboard' ? 'Overview' : link.name;
           return (
             <Link
               key={link.name}
@@ -33,7 +33,7 @@ export default function SideNav({ children }: { children: React.ReactNode }) {
               )}
             >
               <LinkIcon className='w-6' />
-              <p className='hidden md:block'>{link.name}</p>
+              <p className='hidden md:block'>{name}</p>
             </Link>
           );
         })}

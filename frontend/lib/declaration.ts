@@ -1,14 +1,17 @@
 import { JWTPayload } from 'jose';
 import { User, type DefaultSession } from 'next-auth';
 
-export interface SessionUser extends EventUserInfo {
-  id: string;
+export interface DBUser {
   user_id: string;
   email: string;
-  image: string;
-  emailVerified: Date | null;
+  image_url: string;
   first_name: string;
   last_name: string;
+}
+
+export interface SessionUser extends DBUser {
+  id: string;
+  emailVerified: Date | null;
   accessToken: string;
 }
 
@@ -25,7 +28,7 @@ declare module 'next-auth' {
 
 export type CustomJWTPayload = JWTPayload & User;
 
-export interface EventUserInfo {
+export interface EventOrganiser {
   email: string;
   first_name: string;
   last_name: string;
@@ -33,7 +36,7 @@ export interface EventUserInfo {
   user_id: string;
 }
 
-export interface EventData {
+export interface Event {
   id: string;
   event_name: string;
   description: string;
@@ -42,14 +45,35 @@ export interface EventData {
   image_url: string;
   location: string;
   url: '';
-  user_info: EventUserInfo;
+  total_registered: number;
+  user_info: EventOrganiser;
 }
 
-export type DBUser = {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  email_verified: boolean;
-  image: string;
+// export type FilteredEvents = {
+//   past: Event[];
+//   ongoing: Event[];
+//   upcoming: Event[];
+//   active: Event[];
+// };
+
+export type EventFilterProps =
+  | 'all'
+  | 'active'
+  | 'past'
+  | 'ongoing'
+  | 'upcoming';
+
+export type EventStatusProps = 'past' | 'ongoing' | 'upcoming';
+
+export type GetRegisteredEventsProps = {
+  limit?: number;
+  page?: number;
+  status?: EventFilterProps;
+};
+
+export type DBEvent = { events: Event[]; pagination: { total_pages: number } };
+
+export type EventTableProps = {
+  currentPage: number;
+  eventStatus: EventStatusProps;
 };

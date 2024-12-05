@@ -9,48 +9,45 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Label } from './ui/label';
-import { Input } from './ui/input';
-import { Button } from './ui/button';
-import { useEffect, useState } from 'react';
 import { copyText } from '@/lib/utils';
+import clsx from 'clsx';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 
 export default function ShareDialog({
   isOpen,
   setIsOpen,
   url = '',
+  isOnDashboard,
 }: {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  url?: string;
+  url: string;
+  isOnDashboard?: boolean;
 }) {
-  const [pageUrl, setPageUrl] = useState<string>('');
-
-  useEffect(function () {
-    setPageUrl(window.location.href);
-  }, []);
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Share link</DialogTitle>
-          <DialogDescription>
-            Anyone who has this link will be able to view this.
-          </DialogDescription>
+          <DialogDescription>Share this event with others.</DialogDescription>
         </DialogHeader>
         <div className='flex items-center space-x-2'>
           <div className='grid flex-1 gap-2'>
             <Label htmlFor='link' className='sr-only'>
               Link
             </Label>
-            <Input id='link' value={url || pageUrl} readOnly />
+            <Input id='link' value={url} readOnly />
           </div>
           <Button
             type='submit'
             size='sm'
-            className='px-3'
-            onClick={() => copyText(pageUrl)}
+            className={clsx('px-3', {
+              'bg-blue-600 border-blue-600 hover:bg-blue-600/90 text-white':
+                isOnDashboard,
+            })}
+            onClick={() => copyText(url)}
           >
             <span className='sr-only'>Copy</span>
             <Copy />

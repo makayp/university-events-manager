@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Event, EventFilterProps } from './declaration';
 
 const protectedRoutes = ['/dashboard', '/events/create', '/events/[^/]+/edit'];
 
@@ -25,7 +26,21 @@ export function normalizeUrl(url: string) {
   return url;
 }
 
-export const formatDateTime = (dateString: Date) => {
+export const formatDateToLocal = (
+  dateStr: string,
+  locale: string = 'en-US'
+) => {
+  const date = new Date(dateStr);
+  const options: Intl.DateTimeFormatOptions = {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  };
+  const formatter = new Intl.DateTimeFormat(locale, options);
+  return formatter.format(date);
+};
+
+export const formatDateTime = (dateString: string) => {
   const dateTimeOptions: Intl.DateTimeFormatOptions = {
     weekday: 'short', // abbreviated weekday name (e.g., 'Mon')
     month: 'short', // abbreviated month name (e.g., 'Oct')
@@ -71,7 +86,7 @@ export const formatDateTime = (dateString: Date) => {
 };
 
 export function truncateText(text: string, length: number) {
-  if (text.length > 30) return text.substring(0, length) + '...';
+  if (text.length > length) return text.substring(0, length) + '...';
   return text;
 }
 
@@ -128,3 +143,53 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export function filterEvents(
+  events: Event[],
+  filter: EventFilterProps
+): Event[] {
+  const now = Date.now();
+
+  const filteredEvents = {
+    all: [] as Event[],
+    past: [] as Event[],
+    ongoing: [] as Event[],
+    upcoming: [] as Event[],
+    active: [] as Event[],
+  };
+
+  filteredEvents.all = events;
+
+  events.forEach((event) => {
+    const start = new Date(event.start_time).getTime();
+    const end = new Date(event.end_time).getTime();
+
+    if (end < now) {
+      filteredEvents.past.push(event);
+    } else if (start <= now && end >= now) {
+      filteredEvents.ongoing.push(event);
+      filteredEvents.active.push(event);
+    } else if (start > now) {
+      filteredEvents.upcoming.push(event);
+      filteredEvents.active.push(event);
+    }
+  });
+
+  if (!filteredEvents[filter]) return [];
+
+  return filteredEvents[filter];
+}
+
+export function getEventStatus(event: Event): 'past' | 'ongoing' | 'upcoming' {
+  const now = Date.now();
+  const start = new Date(event.start_time).getTime();
+  const end = new Date(event.end_time).getTime();
+
+  if (end < now) {
+    return 'past';
+  } else if (start <= now && end >= now) {
+    return 'ongoing';
+  } else {
+    return 'upcoming';
+  }
+}

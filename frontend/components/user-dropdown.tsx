@@ -7,23 +7,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import LogoutButton from './auth/logout-button';
-import { ClockIcon, TicketIcon, UserIcon } from '@heroicons/react/24/outline';
+
 import Link from 'next/link';
 import UserAvatar from './user-avatar';
+import { DASHBOARD_LINKS } from '@/lib/constants';
 
-export const profileLinks = [
-  { name: 'Dashboard', href: '/dashboard', icon: UserIcon },
-  { name: 'My events', href: '/dashboard/my-events', icon: TicketIcon },
-  {
-    name: 'RSVP Events',
-    href: '/dashboard/rsvps',
-    icon: ClockIcon,
-  },
-
-  { name: 'Account', href: '/dashboard/account', icon: UserIcon },
-];
-
-export default function UserDropdown({ imageSrc }: { imageSrc: string }) {
+export default function UserDropdown({
+  imageSrc,
+}: {
+  imageSrc: string | null | undefined;
+}) {
   return (
     <div>
       <DropdownMenu>
@@ -33,7 +26,7 @@ export default function UserDropdown({ imageSrc }: { imageSrc: string }) {
         <DropdownMenuContent className='w-40'>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {profileLinks.map((link) => {
+          {DASHBOARD_LINKS.map((link) => {
             return (
               <Link
                 href={link.href}
