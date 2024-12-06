@@ -216,6 +216,8 @@ def update(user):
 
         db.session.commit()
 
+        return jsonify({"success": True, "message": "Succefully changed user info."}), 200
+
     except IntegrityError as e:
         db.session.rollback()
         return jsonify({
@@ -269,7 +271,14 @@ def change_password(user):
                 }), 400
             user.update_password(new_password)
             db.session.commit()
+        else:
+            return jsonify({
+                    "success": False,
+                    "message": f"Incorrect Password."
+                }), 400
+
         return jsonify({"success": True, "message": "Password updated successfully."}), 200
+    
     except IntegrityError as e:
         db.session.rollback()
         return jsonify({
