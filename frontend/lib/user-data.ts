@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
 
 export async function getUser(token?: string) {
   let session;
@@ -8,6 +9,10 @@ export async function getUser(token?: string) {
   if (!token) {
     session = await auth();
     token = session?.user.accessToken;
+  }
+
+  if (!token) {
+    redirect('/login');
   }
 
   try {

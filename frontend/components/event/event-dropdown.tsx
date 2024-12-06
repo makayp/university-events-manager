@@ -18,7 +18,7 @@ import {
   TrashIcon,
 } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
-import { Eye, Undo2 } from 'lucide-react';
+import { Eye, Undo2, Users } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -28,6 +28,7 @@ import ConfirmDialog from '../shared/confirm-dialog';
 import Spinner from '../shared/spinner';
 import { Button } from '../ui/button';
 import ShareDialog from '../shared/share-dialog';
+import { ParticipantsDialog } from './participants-dialog';
 
 export default function EventDropdown({
   eventId,
@@ -41,6 +42,8 @@ export default function EventDropdown({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isShareDialogOpen, setShareDialogOpen] = useState(false);
   const [isUnregisterDialogOpen, setIsUnregisterDialogOpen] = useState(false);
+  const [isParticipantsDialogOpen, setIsParticipantsDialogOpen] =
+    useState(false);
 
   const [isPending, startTransition] = useTransition();
 
@@ -144,16 +147,19 @@ export default function EventDropdown({
         isOpen={isShareDialogOpen}
         setIsOpen={setShareDialogOpen}
       />
+      <ParticipantsDialog
+        isOnDashboard
+        eventId={eventId}
+        isOpen={isParticipantsDialogOpen}
+        setIsOpen={setIsParticipantsDialogOpen}
+      />
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild className='block focus:outline-none'>
           <Button
             size='lg'
             variant='outline'
-            className={twMerge(
-              'px-7 rounded-full [&_svg]:stroke-gray-400',
-              className
-            )}
+            className={twMerge('px-7 rounded-full', className)}
           >
             <EllipsisVerticalIcon />
           </Button>
@@ -178,6 +184,20 @@ export default function EventDropdown({
             </>
           )}
 
+          {isEventOrganiser && isOnDashboard && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className=' hover:bg-gray-100'
+                onClick={() => {
+                  setIsParticipantsDialogOpen(true);
+                }}
+              >
+                <Users /> Participants
+              </DropdownMenuItem>
+            </>
+          )}
+
           {isEventOrganiser && (
             <>
               <DropdownMenuSeparator />
@@ -186,7 +206,9 @@ export default function EventDropdown({
                   <PencilSquareIcon /> Edit
                 </DropdownMenuItem>
               </Link>
+
               <DropdownMenuSeparator />
+
               <DropdownMenuItem
                 className='text-destructive hover:bg-gray-100'
                 onClick={() => {

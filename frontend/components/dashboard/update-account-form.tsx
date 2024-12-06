@@ -15,17 +15,18 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { ChangePasswordSchema, UpdateAccountSchema } from '@/lib/zod';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useToast } from '@/hooks/use-toast';
 import { changePassword, updateAccount } from '@/lib/action';
+import { MAX_FILE_SIZE } from '@/lib/constants';
 import { checkFileSize } from '@/lib/utils';
 import Warning from '@/public/icons/warning.svg';
 import { UserIcon } from '@heroicons/react/24/outline';
 import { Eye } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import 'react-datepicker/dist/react-datepicker.css';
-import { MAX_FILE_SIZE } from '@/lib/constants';
 import PasswordValidation from '../auth/password-validation';
 import Spinner from '../shared/spinner';
 
@@ -36,6 +37,8 @@ export function UpdateUserData({
 }) {
   const [image, setImage] = useState<File | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const router = useRouter();
 
   user.image_url = user.image_url || '';
 
@@ -71,12 +74,18 @@ export function UpdateUserData({
     }
 
     if (response?.success) {
+      router.refresh();
+
       toast({
         title: 'Success',
         description: response.success,
       });
     }
   }
+
+  useEffect(() => {
+    form.reset(user);
+  }, [user, form]);
 
   function handleFileChange(
     acceptedFiles: FileList | null,
@@ -181,6 +190,8 @@ export function UpdateUserData({
                           <Image
                             src={field.value}
                             fill
+                            sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+                            priority
                             alt='User avatar'
                             className='object-cover object-center'
                           />
@@ -299,6 +310,7 @@ export function ChangePassword() {
     }
 
     if (response?.success) {
+      form.reset();
       toast({
         title: 'Success',
         description: response.success,
@@ -414,8 +426,6 @@ export function ChangePassword() {
               )}
             />
           </div>
-
-          <div></div>
         </div>
 
         {form.formState.errors.root && (

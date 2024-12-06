@@ -11,17 +11,19 @@ import LogoutButton from '../auth/logout-button';
 import Link from 'next/link';
 import UserAvatar from '../shared/user-avatar';
 import { DASHBOARD_LINKS } from '@/lib/constants';
+import { DBUser } from '@/lib/declaration';
+import { getUser } from '@/lib/user-data';
 
-export default function UserDropdown({
-  imageSrc,
-}: {
-  imageSrc: string | null | undefined;
-}) {
+export default async function UserDropdown() {
+  const user: DBUser = await getUser();
+
+  if (!user) return null;
+
   return (
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild className='block focus:outline-none'>
-          <UserAvatar imageSrc={imageSrc} />
+          <UserAvatar imageSrc={user.image_url} />
         </DropdownMenuTrigger>
         <DropdownMenuContent className='w-40'>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>

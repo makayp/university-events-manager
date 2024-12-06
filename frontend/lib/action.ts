@@ -13,6 +13,8 @@ import { auth, signIn, signOut } from '@/auth';
 import { redirect } from 'next/navigation';
 import { AuthError } from 'next-auth';
 import { uploadImage } from './cloudinary';
+import { revalidatePath } from 'next/cache';
+import { getEventById } from './event-data';
 
 export async function signup(userData: z.infer<typeof SignUpSchema>) {
   let isAccountCreated = false;
@@ -308,17 +310,111 @@ export async function unregisterEvent({ eventId }: { eventId: string }) {
   }
 }
 
+export async function getParticipants(eventID: string) {
+  const event = await getEventById(eventID);
+
+  return event.registered_users;
+}
+
 export async function updateAccount(
   updatedUser: z.infer<typeof UpdateAccountSchema>
 ) {
-  console.log(updatedUser);
-  return { success: 'string', error: 'string' };
+  const session = await auth();
+
+  if (!session) {
+    console.log('no session');
+    redirect(`/login?callbackUrl=/dashboard/account/`);
+  }
+
+  let imageUrl;
+  if (updatedUser.image) {
+    try {
+      imageUrl = await uploadImage({
+        image: updatedUser.image,
+        folder: 'user-image',
+      });
+    } catch (error) {
+      return {
+        error: 'Failed to update profile. Please try again later.',
+      };
+    }
+  }
+
+  const user_info = {
+    first_name: updatedUser.first_name,
+    last_name: updatedUser.last_name,
+    image_url: imageUrl || updatedUser.image_url,
+  };
+
+  try {
+    const res = await fetch(
+      `${process.env.SERVER_ENDPOINT}/auth/update_user_info`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.user.accessToken}`,
+        },
+        body: JSON.stringify(user_info),
+      }
+    );
+
+    if (!res.ok) {
+      console.log(res);
+      return { error: 'Failed to update profile. Please try again later.' };
+    }
+
+    // revalidatePath('/dashboard/account');
+
+    return { success: 'Profile updated successfully' };
+  } catch (error) {
+    console.error('Network error:', error);
+    return {
+      error: 'Failed to update profile. Please try again later.',
+    };
+  }
 }
 
 export async function changePassword(
   values: z.infer<typeof ChangePasswordSchema>
 ) {
-  const { password, new_password } = values;
-  console.log(values);
-  return { success: 'string', error: 'string' };
+  const session = await auth();
+  if (!session) {
+    console.log('no session');
+    redirect(`/login?callbackUrl=/dashboard/account/`);
+  }
+
+  const user_data = {
+    email: session.user.email,
+    password: values.password,
+    new_password: values.new_password,
+  };
+
+  try {
+    const res = await fetch(
+      `${process.env.SERVER_ENDPOINT}/auth/change_password`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.user.accessToken}`,
+        },
+        body: JSON.stringify(user_data),
+      }
+    );
+
+    if (!res.ok) {
+      if (res.status === 400) {
+        return { error: 'Password is incorrect.' };
+      }
+      return { error: 'Failed to update password. Please try again later.' };
+    }
+
+    return { success: 'Password updated successfully' };
+  } catch (error) {
+    console.error('Network error:', error);
+    return {
+      error: 'Failed to update profile. Please try again later.',
+    };
+  }
 }

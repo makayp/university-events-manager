@@ -1,10 +1,15 @@
-import { ClockIcon, TicketIcon, UserIcon } from '@heroicons/react/24/outline';
+import {
+  CalendarDaysIcon,
+  ChartPieIcon,
+  TicketIcon,
+  UserIcon,
+} from '@heroicons/react/24/outline';
 
 export const MAX_FILE_SIZE = 2;
 
 export const DASHBOARD_LINKS = [
-  { name: 'Dashboard', href: '/dashboard', icon: UserIcon },
-  { name: 'My events', href: '/dashboard/my-events', icon: ClockIcon },
+  { name: 'Dashboard', href: '/dashboard', icon: ChartPieIcon },
+  { name: 'My events', href: '/dashboard/my-events', icon: CalendarDaysIcon },
   {
     name: 'RSVPs',
     href: '/dashboard/rsvps',

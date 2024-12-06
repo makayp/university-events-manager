@@ -6,6 +6,7 @@ export default function Logo({ className }: { className?: string }) {
   return (
     <Image
       src={LogoImage}
+      priority
       alt='Logo'
       className={twMerge('w-[7rem] sm:w-[7.3rem]', className)}
     />

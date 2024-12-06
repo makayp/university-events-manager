@@ -1,7 +1,7 @@
 import { auth } from '@/auth';
-import { Button } from '../ui/button';
 import Link from 'next/link';
 import UserDropdown from '../shared/user-dropdown';
+import { Button } from '../ui/button';
 
 export default async function HeaderAction() {
   const session = await auth();
@@ -15,8 +15,7 @@ export default async function HeaderAction() {
           </Button>
         </Link>
       )}
-
-      {session && <UserDropdown imageSrc={session.user.image} />}
+      {session && <UserDropdown />}
     </div>
   );
 }

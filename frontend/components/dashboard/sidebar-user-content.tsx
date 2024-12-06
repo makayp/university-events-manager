@@ -2,7 +2,7 @@
 
 import useBreakpoint from '@/hooks/use-breakpoint';
 import { DBUser } from '@/lib/declaration';
-import { Edit, Settings } from 'lucide-react';
+import { Edit } from 'lucide-react';
 import Link from 'next/link';
 import LogoutButton from '../auth/logout-button';
 import {
@@ -43,12 +43,12 @@ export default function DropdownContent({ user }: { user: DBUser }) {
             Edit Profile
           </DropdownMenuItem>
         </Link>
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator />
 
         <DropdownMenuItem className='hover:bg-gray-900/5'>
           <Settings />
           Settings
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
       <DropdownMenuItem className='hover:bg-gray-900/5'>

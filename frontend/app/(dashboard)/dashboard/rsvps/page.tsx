@@ -21,7 +21,7 @@ export default async function Page({
         <div className='flex items-center justify-between grow'>
           <h1 className='text-xl'>RSVPs</h1>
           <Suspense>
-            <div className='hidden md:block'>
+            <div className='hidden sm:block'>
               <Filter
                 filterField='eventStatus'
                 options={[
@@ -32,7 +32,7 @@ export default async function Page({
                 ]}
               />
             </div>
-            <div className='md:hidden'>
+            <div className='sm:hidden'>
               <Filter
                 filterField='eventStatus'
                 options={[

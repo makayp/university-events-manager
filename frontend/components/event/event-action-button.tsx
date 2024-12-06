@@ -1,8 +1,8 @@
 import { auth } from '@/auth';
 import { Button } from '../ui/button';
-import Link from 'next/link';
 import { checkIsRegistered } from '@/lib/event-data';
 import RegisterationButton from './registration-button';
+import { ParticipantsDialog } from './participants-dialog';
 
 export default async function EventActionButton({
   eventId,
@@ -20,15 +20,15 @@ export default async function EventActionButton({
   return (
     <div className=''>
       {isEventOrganiser && (
-        <Link href={`/dashboard/my-events/${eventId}`}>
+        <ParticipantsDialog eventId={eventId}>
           <Button
             size='lg'
             variant='outline'
-            className='rounded-full w-full md:w-[150px] '
+            className='rounded-full w-full md:w-[170px] '
           >
-            Manage event
+            View participants
           </Button>
-        </Link>
+        </ParticipantsDialog>
       )}
       {!isEventOrganiser && (
         <RegisterationButton eventId={eventId} isRegistered={isRegistered} />

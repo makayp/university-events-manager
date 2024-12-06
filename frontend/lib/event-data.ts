@@ -2,7 +2,7 @@
 
 import { auth } from '@/auth';
 import { notFound } from 'next/navigation';
-import { DBEvent, Event, GetUserEventsProps } from './declaration';
+import { DBEvent, DBUser, Event, GetUserEventsProps } from './declaration';
 import { filterEvents } from './utils';
 
 export async function getEvents({
@@ -45,7 +45,7 @@ export async function getEvents({
 }
 
 export async function getEventById(id: string) {
-  let data;
+  let data: { event: Event; registered_users: DBUser[] };
   let res;
   try {
     res = await fetch(`${process.env.SERVER_ENDPOINT}/events/${id}`);
@@ -60,7 +60,7 @@ export async function getEventById(id: string) {
 
   data = await res.json();
 
-  return data.event;
+  return data;
 }
 
 export async function getUserEvents({
