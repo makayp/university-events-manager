@@ -121,3 +121,19 @@ export async function checkIsRegistered({ eventId }: { eventId: string }) {
 
   return isRegistered;
 }
+
+export async function getDashboardStats() {
+  const [createdEvents, registeredEvents] = await Promise.all([
+    getUserEvents({ type: 'created' }),
+    getUserEvents({ type: 'rsvps' }),
+  ]);
+
+  const upcoming = filterEvents(
+    [...createdEvents.events, ...registeredEvents.events],
+    'upcoming'
+  );
+  const totalCreated = createdEvents.events.length;
+  const totalRegistered = registeredEvents.events.length;
+
+  return { upcoming, totalCreated, totalRegistered };
+}

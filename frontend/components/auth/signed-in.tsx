@@ -7,8 +7,6 @@ export default async function SignedIn({
 }) {
   const session = await auth();
 
-  console.log(session);
-
   if (!session) {
     console.log('No session ');
     return null;

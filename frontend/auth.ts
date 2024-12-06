@@ -36,7 +36,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const data = await res.json();
 
           if (res.status == 401) {
-            console.log(data);
             return null;
           }
 
