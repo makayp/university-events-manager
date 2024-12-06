@@ -50,7 +50,6 @@ export function SignupForm() {
   const password = form.watch('password');
 
   async function onSubmit(values: z.infer<typeof SignUpSchema>) {
-    console.log(values);
     const data = await signup(values);
 
     if (data?.error) form.setError('root', { message: data.error });

@@ -5,7 +5,6 @@ import { useAuth } from '@/context/auth-context';
 
 export default function SignedOut({ children }: { children: React.ReactNode }) {
   const { isLoggedIn } = useAuth();
-  console.log(isLoggedIn);
 
   if (isLoggedIn) return null;
 

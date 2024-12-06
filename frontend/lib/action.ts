@@ -13,7 +13,6 @@ import { auth, signIn, signOut } from '@/auth';
 import { redirect } from 'next/navigation';
 import { AuthError } from 'next-auth';
 import { uploadImage } from './cloudinary';
-import { revalidatePath } from 'next/cache';
 import { getEventById } from './event-data';
 
 export async function signup(userData: z.infer<typeof SignUpSchema>) {
@@ -33,10 +32,9 @@ export async function signup(userData: z.infer<typeof SignUpSchema>) {
       },
     });
 
-    data = await res.json();
+    // data = await res.json();
 
     if (res.status == 409) {
-      console.log(data);
       return { error: 'Email already exists' };
     }
 
@@ -221,7 +219,7 @@ export async function deleteEvent(eventId: string) {
     );
 
     if (!res.ok) {
-      console.log(eventId, session);
+      // console.log(eventId, session);
 
       // console.log(await res.json());
       return { error: 'Something went wrong. Try again' };
@@ -253,9 +251,7 @@ export async function registerForEvent({ eventId }: { eventId: string }) {
       }
     );
 
-    const data = await res.json();
-
-    console.log(res.status, data);
+    // const data = await res.json();
 
     if (res.status == 409) {
       return { error: 'You already registered for this event' };
@@ -291,9 +287,9 @@ export async function unregisterEvent({ eventId }: { eventId: string }) {
       }
     );
 
-    const data = await res.json();
+    // const data = await res.json();
 
-    console.log(res.status, data);
+    // console.log(res.status, data);
 
     if (res.status == 404) {
       return { error: 'You are not registered for this event' };
@@ -360,11 +356,8 @@ export async function updateAccount(
     );
 
     if (!res.ok) {
-      console.log(res);
       return { error: 'Failed to update profile. Please try again later.' };
     }
-
-    // revalidatePath('/dashboard/account');
 
     return { success: 'Profile updated successfully' };
   } catch (error) {

@@ -92,7 +92,6 @@ export function UpdateUserData({
     // eslint-disable-next-line no-unused-vars
     onChange: (value: string) => void
   ) {
-    console.log(acceptedFiles);
     if (!acceptedFiles || acceptedFiles.length === 0) return;
     const file = acceptedFiles[0];
     try {
