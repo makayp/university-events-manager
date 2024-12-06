@@ -30,8 +30,8 @@ import { SignInSchema } from '@/lib/zod';
 import { login } from '@/lib/action';
 import { Eye } from 'lucide-react';
 import { useState } from 'react';
-import Spinner from './spinner';
-import Logo from './header/logo';
+import Spinner from '../shared/spinner';
+import Logo from '../header/logo';
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);

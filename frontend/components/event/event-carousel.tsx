@@ -1,5 +1,5 @@
 import { Event } from '@/lib/declaration';
-import Card from './card';
+import Card from '../shared/card';
 
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 

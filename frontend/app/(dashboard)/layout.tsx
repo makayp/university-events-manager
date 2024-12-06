@@ -1,6 +1,6 @@
-import SideNav from '@/components/side-nav';
-import SidebarUser from '@/components/sidebar-user';
-import { SkeletonSidebarUser } from '@/components/skeleton';
+import SideNav from '@/components/dashboard/side-nav';
+import SidebarUser from '@/components/dashboard/sidebar-user';
+import { SkeletonSidebarUser } from '@/components/shared/skeleton';
 import SessionProvider from '@/context/session-provider';
 import { Suspense } from 'react';
 

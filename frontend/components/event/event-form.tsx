@@ -20,8 +20,8 @@ import {
   MapPinIcon,
 } from '@heroicons/react/20/solid';
 import { useState } from 'react';
-import ImageUploader from './image-uploader';
-import { Textarea } from './ui/textarea';
+import ImageUploader from '../shared/image-uploader';
+import { Textarea } from '../ui/textarea';
 
 import { useToast } from '@/hooks/use-toast';
 import { createEvent, updateEvent } from '@/lib/action';
@@ -30,8 +30,8 @@ import Warning from '@/public/icons/warning.svg';
 import { useRouter } from 'next/navigation';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { MAX_FILE_SIZE } from '../lib/constants';
-import Spinner from './spinner';
+import { MAX_FILE_SIZE } from '../../lib/constants';
+import Spinner from '../shared/spinner';
 
 export default function EventForm({
   type,

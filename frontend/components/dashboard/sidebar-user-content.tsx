@@ -4,15 +4,15 @@ import useBreakpoint from '@/hooks/use-breakpoint';
 import { DBUser } from '@/lib/declaration';
 import { Edit, Settings } from 'lucide-react';
 import Link from 'next/link';
-import LogoutButton from './auth/logout-button';
+import LogoutButton from '../auth/logout-button';
 import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from './ui/dropdown-menu';
-import UserAvatar from './user-avatar';
+} from '../ui/dropdown-menu';
+import UserAvatar from '../shared/user-avatar';
 
 export default function DropdownContent({ user }: { user: DBUser }) {
   const { isMobile } = useBreakpoint();

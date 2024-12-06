@@ -1,5 +1,5 @@
 import { TABLE_LIMIT } from '@/lib/constants';
-import { Skeleton } from './ui/skeleton';
+import { Skeleton } from '../ui/skeleton';
 
 export function SkeletonSidebarUser() {
   return (
@@ -22,9 +22,7 @@ export function TableSkeleton() {
             {Array.from({ length: TABLE_LIMIT }, (_, i) => (
               <div key={i} className='mb-4 w-full rounded-md bg-white p-4'>
                 <div className='flex items-center justify-between border-b pb-4'>
-                  <p>
-                    <Skeleton className='w-14 h-4' />
-                  </p>
+                  <Skeleton className='w-14 h-4' />
 
                   <Skeleton className='w-14 h-4' />
                 </div>

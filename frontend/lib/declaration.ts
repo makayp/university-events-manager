@@ -65,10 +65,11 @@ export type EventFilterProps =
 
 export type EventStatusProps = 'past' | 'ongoing' | 'upcoming';
 
-export type GetRegisteredEventsProps = {
+export type GetUserEventsProps = {
   limit?: number;
   page?: number;
   status?: EventFilterProps;
+  type: 'created' | 'rsvps';
 };
 
 export type DBEvent = { events: Event[]; pagination: { total_pages: number } };

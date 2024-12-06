@@ -1,4 +1,4 @@
-import EventDropdown from '@/components/event-dropdown';
+import EventDropdown from '@/components/event/event-dropdown';
 import { Button } from '@/components/ui/button';
 import { getEventById } from '@/lib/event-data';
 
@@ -17,8 +17,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import previewImage from '@/public/images/default-fallback-image.png';
-import EventsList from '@/components/events-list';
-import EventActionButton from '@/components/event-action-button';
+import EventsList from '@/components/event/events-list';
+import EventActionButton from '@/components/event/event-action-button';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 

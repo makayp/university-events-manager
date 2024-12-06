@@ -1,9 +1,9 @@
 import { Event } from '@/lib/declaration';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
-import Card from './card';
-import { Button } from './ui/button';
-import Pagination from './pagination';
+import Card from '../shared/card';
+import { Button } from '../ui/button';
+import Pagination from '../shared/pagination';
 
 export default function EventsCollection({
   events,

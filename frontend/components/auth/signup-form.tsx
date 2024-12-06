@@ -29,9 +29,9 @@ import { signup } from '@/lib/action';
 import { SignUpSchema } from '@/lib/zod';
 import { Eye } from 'lucide-react';
 import { useState } from 'react';
-import Logo from './header/logo';
-import PasswordValidation from './password-validation';
-import Spinner from './spinner';
+import Logo from '../header/logo';
+import PasswordValidation from '../auth/password-validation';
+import Spinner from '../shared/spinner';
 
 export function SignupForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);

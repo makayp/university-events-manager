@@ -5,7 +5,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import DropdownContent from './sidebar-user-content';
-import UserAvatar from './user-avatar';
+import UserAvatar from '../shared/user-avatar';
 import { getUser } from '@/lib/user-data';
 import { DBUser } from '@/lib/declaration';
 

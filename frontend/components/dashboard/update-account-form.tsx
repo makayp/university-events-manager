@@ -25,9 +25,9 @@ import { UserIcon } from '@heroicons/react/24/outline';
 import { Eye } from 'lucide-react';
 import Image from 'next/image';
 import 'react-datepicker/dist/react-datepicker.css';
-import { MAX_FILE_SIZE } from '../lib/constants';
-import PasswordValidation from './password-validation';
-import Spinner from './spinner';
+import { MAX_FILE_SIZE } from '@/lib/constants';
+import PasswordValidation from '../auth/password-validation';
+import Spinner from '../shared/spinner';
 
 export function UpdateUserData({
   user,

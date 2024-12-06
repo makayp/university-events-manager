@@ -2,7 +2,7 @@
 
 import { auth } from '@/auth';
 import { notFound } from 'next/navigation';
-import { DBEvent, Event, GetRegisteredEventsProps } from './declaration';
+import { DBEvent, Event, GetUserEventsProps } from './declaration';
 import { filterEvents } from './utils';
 
 export async function getEvents({
@@ -63,12 +63,15 @@ export async function getEventById(id: string) {
   return data.event;
 }
 
-export async function getRegisteredEvents({
+export async function getUserEvents({
   limit = 10,
-  page,
+  page = 1,
   status = 'all',
-}: GetRegisteredEventsProps) {
+  type,
+}: GetUserEventsProps) {
   const session = await auth();
+
+  const eventToGet = type === 'created' ? 'user_created_events' : 'registered';
 
   if (!session) {
     console.log('no session');
@@ -77,7 +80,7 @@ export async function getRegisteredEvents({
 
   try {
     const res = await fetch(
-      `${process.env.SERVER_ENDPOINT}/events/registered?page=${page}&per_page=${limit}`,
+      `${process.env.SERVER_ENDPOINT}/events/${eventToGet}?page=${page}&per_page=${limit}`,
       {
         method: 'GET',
         headers: {
@@ -94,14 +97,6 @@ export async function getRegisteredEvents({
 
     const filteredEvents = filterEvents(data.events, status);
 
-    // let totalPages = Math.ceil(filteredEvents.length / limit);
-
-    // if (page) {
-    //   const start = limit * (page - 1);
-    //   const end = page * limit;
-
-    console.log(data.pagination);
-
     return { events: filteredEvents, totalPages: data.pagination.total_pages };
   } catch (error) {
     console.log(error);
@@ -116,7 +111,9 @@ export async function checkIsRegistered({ eventId }: { eventId: string }) {
     return false;
   }
 
-  const registeredEvents: { events: Event[] } = await getRegisteredEvents({});
+  const registeredEvents: { events: Event[] } = await getUserEvents({
+    type: 'rsvps',
+  });
 
   const isRegistered = registeredEvents.events.some(
     (event) => event.id == eventId

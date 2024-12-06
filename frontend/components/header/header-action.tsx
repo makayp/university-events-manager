@@ -1,7 +1,7 @@
 import { auth } from '@/auth';
 import { Button } from '../ui/button';
 import Link from 'next/link';
-import UserDropdown from '../user-dropdown';
+import UserDropdown from '../shared/user-dropdown';
 
 export default async function HeaderAction() {
   const session = await auth();

@@ -1,5 +1,5 @@
-import EventsList from '@/components/events-list';
-import Search from '@/components/search';
+import EventsList from '@/components/event/events-list';
+import Search from '@/components/shared/search';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 

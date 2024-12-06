@@ -1,7 +1,6 @@
-import Filter from '@/components/filter';
-import RsvpTable from '@/components/rsvp-table';
-import { TableSkeleton } from '@/components/skeleton';
-// import RsvpTable from '@/components/table';
+import Filter from '@/components/shared/filter';
+import RsvpTable from '@/components/dashboard/rsvp-table';
+import { TableSkeleton } from '@/components/shared/skeleton';
 import { EventStatusProps } from '@/lib/declaration';
 import { Suspense } from 'react';
 

@@ -1,5 +1,5 @@
-import AccountUpdateForm from '@/components/account-update-form';
-import Spinner from '@/components/spinner';
+import AccountUpdateForm from '@/components/dashboard/account-update-form';
+import Spinner from '@/components/shared/spinner';
 import { Suspense } from 'react';
 
 export default function Page() {

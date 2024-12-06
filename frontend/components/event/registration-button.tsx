@@ -1,11 +1,11 @@
 'use client';
 
 import { registerForEvent, unregisterEvent } from '@/lib/action';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import clsx from 'clsx';
 import { useTransition } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import Spinner from './spinner';
+import Spinner from '../shared/spinner';
 import { useRouter } from 'next/navigation';
 
 export default function RegisterationButton({

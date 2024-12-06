@@ -24,10 +24,10 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { twMerge } from 'tailwind-merge';
-import ConfirmDialog from './confirm-dialog';
-import Share from './share-dialog';
-import Spinner from './spinner';
-import { Button } from './ui/button';
+import ConfirmDialog from '../shared/confirm-dialog';
+import Spinner from '../shared/spinner';
+import { Button } from '../ui/button';
+import ShareDialog from '../shared/share-dialog';
 
 export default function EventDropdown({
   eventId,
@@ -72,11 +72,6 @@ export default function EventDropdown({
           description: response.success,
         });
         setIsDeleteDialogOpen(false);
-
-        // const redirectTo =
-        //   pathname === `/events/${eventId}`
-        //     ? '/events'
-        //     : '/dashboard/my-events';
 
         const redirectTo = '/dashboard/my-events';
 
@@ -143,7 +138,7 @@ export default function EventDropdown({
         </Button>
       </ConfirmDialog>
 
-      <Share
+      <ShareDialog
         isOnDashboard={isOnDashboard}
         url={`${process.env.NEXT_PUBLIC_URL}/events/${eventId}`}
         isOpen={isShareDialogOpen}
@@ -172,9 +167,19 @@ export default function EventDropdown({
             <ShareIcon /> Share
           </DropdownMenuItem>
 
+          {isOnDashboard && (
+            <>
+              <DropdownMenuSeparator />
+              <Link href={`/events/${eventId}`}>
+                <DropdownMenuItem className='text-gray-900/80 hover:bg-gray-100'>
+                  <Eye /> Details
+                </DropdownMenuItem>
+              </Link>
+            </>
+          )}
+
           {isEventOrganiser && (
             <>
-              {' '}
               <DropdownMenuSeparator />
               <Link href={`/events/${eventId}/edit`}>
                 <DropdownMenuItem className='text-gray-900/80 hover:bg-gray-100'>
@@ -190,17 +195,6 @@ export default function EventDropdown({
               >
                 <TrashIcon /> Delete
               </DropdownMenuItem>
-            </>
-          )}
-
-          {isOnDashboard && (
-            <>
-              <DropdownMenuSeparator />
-              <Link href={`/events/${eventId}`}>
-                <DropdownMenuItem className='text-gray-900/80 hover:bg-gray-100'>
-                  <Eye /> Details
-                </DropdownMenuItem>
-              </Link>
             </>
           )}
 

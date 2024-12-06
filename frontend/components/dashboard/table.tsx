@@ -4,10 +4,10 @@ import { TicketIcon } from '@heroicons/react/24/outline';
 import { User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import EventDropdown from './event-dropdown';
-import EventStatus from './event-status';
-import Pagination from './pagination';
-import EventOrganiser from './event-organiser';
+import EventDropdown from '../event/event-dropdown';
+import EventStatus from '../event/event-status';
+import Pagination from '../shared/pagination';
+import EventOrganiser from '../event/event-organiser';
 
 export default async function Table({
   events,

@@ -1,5 +1,5 @@
 import { UserIcon } from '@heroicons/react/24/outline';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 export default function UserAvatar({
   imageSrc,

@@ -6,10 +6,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import LogoutButton from './auth/logout-button';
+import LogoutButton from '../auth/logout-button';
 
 import Link from 'next/link';
-import UserAvatar from './user-avatar';
+import UserAvatar from '../shared/user-avatar';
 import { DASHBOARD_LINKS } from '@/lib/constants';
 
 export default function UserDropdown({
