@@ -1,13 +1,20 @@
 'use server';
 
 import { z } from 'zod';
-import { EventFormSchema, SignInSchema, SignUpSchema } from './zod';
+import {
+  ChangePasswordSchema,
+  EventFormSchema,
+  SignInSchema,
+  SignUpSchema,
+  UpdateAccountSchema,
+} from './zod';
 
 import { auth, signIn, signOut } from '@/auth';
-import { notFound, redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { AuthError } from 'next-auth';
-import { EventData } from './declaration';
 import { uploadImage } from './cloudinary';
+import { revalidatePath } from 'next/cache';
+import { getEventById } from './event-data';
 
 export async function signup(userData: z.infer<typeof SignUpSchema>) {
   let isAccountCreated = false;
@@ -75,94 +82,6 @@ export async function login(
 
 export async function logout() {
   await signOut();
-}
-
-export async function getEvents({
-  limit,
-  query,
-  page,
-  field,
-}: {
-  limit: number;
-  query?: string;
-  page?: number;
-  field?: string;
-}) {
-  try {
-    let res;
-
-    if (query)
-      res = await fetch(
-        `${process.env.SERVER_ENDPOINT}/events/search?text=${query}&field=${field}&per_page=${limit}`
-      );
-    else
-      res = await fetch(
-        `${process.env.SERVER_ENDPOINT}/events/upcoming?per_page=${limit}&page=${page}`
-      );
-
-    const data: { events: EventData[]; pagination: { total_pages: number } } =
-      await res.json();
-
-    if (!res.ok) return { error: 'Something went wrong. Please try again' };
-
-    if (query) {
-      return { events: data.events };
-    }
-
-    return { events: data.events, totalPages: data.pagination.total_pages };
-  } catch (error) {
-    console.log(error);
-    return {
-      error: 'Server error. Please try again later.',
-    };
-  }
-}
-
-export async function getEventById(id: string) {
-  let data;
-  let res;
-  try {
-    res = await fetch(`${process.env.SERVER_ENDPOINT}/events/${id}`);
-  } catch (error) {
-    console.log(error);
-    throw new Error('Failed to connect to the server. Please try again later.');
-  }
-
-  if (res?.status == 404) notFound();
-
-  if (!res.ok) throw new Error('Something went wrong');
-
-  data = await res.json();
-
-  return data.event;
-}
-
-export async function getUser(token?: string) {
-  let session;
-
-  if (!token) {
-    session = await auth();
-    token = session?.user.accessToken;
-  }
-
-  try {
-    const res = await fetch(`${process.env.SERVER_ENDPOINT}/auth/get_user`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const user = await res.json();
-
-    if (res.ok) {
-      return user.user_info;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
-  return null;
 }
 
 export async function createEvent(newEvent: z.infer<typeof EventFormSchema>) {
@@ -302,6 +221,9 @@ export async function deleteEvent(eventId: string) {
     );
 
     if (!res.ok) {
+      console.log(eventId, session);
+
+      // console.log(await res.json());
       return { error: 'Something went wrong. Try again' };
     }
 
@@ -310,51 +232,6 @@ export async function deleteEvent(eventId: string) {
     console.log(error);
     return { error: 'Server error. Try again' };
   }
-}
-
-export async function getRegisteredEvents() {
-  const session = await auth();
-
-  if (!session) {
-    console.log('no session');
-    redirect('/login');
-  }
-
-  try {
-    const res = await fetch(
-      `${process.env.SERVER_ENDPOINT}/events/registered`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-      }
-    );
-
-    const data = await res.json();
-
-    if (res.status == 404) return [];
-
-    if (!res.ok) throw new Error('Something went wrong. Please try again');
-
-    return data.events;
-  } catch (error) {
-    console.log(error);
-    throw new Error('Server error. Please try again later.');
-  }
-}
-
-export async function checkIsRegistered({ eventId }: { eventId: string }) {
-  const session = await auth();
-
-  if (!session) {
-    return false;
-  }
-
-  const registeredEvents: EventData[] = await getRegisteredEvents();
-  const isRegistered = registeredEvents.some((event) => event.id == eventId);
-
-  return isRegistered;
 }
 
 export async function registerForEvent({ eventId }: { eventId: string }) {
@@ -429,6 +306,115 @@ export async function unregisterEvent({ eventId }: { eventId: string }) {
     console.log(error);
     return {
       error: 'Server error. Please try again later.',
+    };
+  }
+}
+
+export async function getParticipants(eventID: string) {
+  const event = await getEventById(eventID);
+
+  return event.registered_users;
+}
+
+export async function updateAccount(
+  updatedUser: z.infer<typeof UpdateAccountSchema>
+) {
+  const session = await auth();
+
+  if (!session) {
+    console.log('no session');
+    redirect(`/login?callbackUrl=/dashboard/account/`);
+  }
+
+  let imageUrl;
+  if (updatedUser.image) {
+    try {
+      imageUrl = await uploadImage({
+        image: updatedUser.image,
+        folder: 'user-image',
+      });
+    } catch (error) {
+      return {
+        error: 'Failed to update profile. Please try again later.',
+      };
+    }
+  }
+
+  const user_info = {
+    first_name: updatedUser.first_name,
+    last_name: updatedUser.last_name,
+    image_url: imageUrl || updatedUser.image_url,
+  };
+
+  try {
+    const res = await fetch(
+      `${process.env.SERVER_ENDPOINT}/auth/update_user_info`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.user.accessToken}`,
+        },
+        body: JSON.stringify(user_info),
+      }
+    );
+
+    if (!res.ok) {
+      console.log(res);
+      return { error: 'Failed to update profile. Please try again later.' };
+    }
+
+    // revalidatePath('/dashboard/account');
+
+    return { success: 'Profile updated successfully' };
+  } catch (error) {
+    console.error('Network error:', error);
+    return {
+      error: 'Failed to update profile. Please try again later.',
+    };
+  }
+}
+
+export async function changePassword(
+  values: z.infer<typeof ChangePasswordSchema>
+) {
+  const session = await auth();
+  if (!session) {
+    console.log('no session');
+    redirect(`/login?callbackUrl=/dashboard/account/`);
+  }
+
+  const user_data = {
+    email: session.user.email,
+    password: values.password,
+    new_password: values.new_password,
+  };
+
+  try {
+    const res = await fetch(
+      `${process.env.SERVER_ENDPOINT}/auth/change_password`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.user.accessToken}`,
+        },
+        body: JSON.stringify(user_data),
+      }
+    );
+
+    if (!res.ok) {
+      if (res.status === 400) {
+        return { error: 'Password is incorrect.' };
+      }
+      return { error: 'Failed to update password. Please try again later.' };
+    }
+
+    return { success: 'Password updated successfully' };
+  } catch (error) {
+    console.error('Network error:', error);
+    return {
+      error: 'Failed to update profile. Please try again later.',
     };
   }
 }

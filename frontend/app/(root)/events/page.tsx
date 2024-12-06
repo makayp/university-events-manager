@@ -1,6 +1,7 @@
-import EventsList from '@/components/events-list';
-import Search from '@/components/search';
+import EventsList from '@/components/event/events-list';
+import Search from '@/components/shared/search';
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'Explore Events',
@@ -28,8 +29,9 @@ export default async function Page({
               Let&apos;s find various events happening around campus.
             </h3>
           </div>
-
-          <Search />
+          <Suspense>
+            <Search center rounded className='max-w-3xl' />
+          </Suspense>
         </div>
 
         <div className='container'>

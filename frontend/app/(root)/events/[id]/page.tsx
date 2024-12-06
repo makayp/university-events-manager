@@ -1,13 +1,14 @@
-import EventDropdown from '@/components/event-dropdown';
+import EventDropdown from '@/components/event/event-dropdown';
 import { Button } from '@/components/ui/button';
-import { getEventById } from '@/lib/action';
+import { getEventById } from '@/lib/event-data';
 
-import { EventData } from '@/lib/declaration';
+import { Event } from '@/lib/declaration';
 import { formatDateTime, normalizeUrl } from '@/lib/utils';
 import {
   ArrowRightIcon,
   CalendarDateRangeIcon,
   ClockIcon,
+  EnvelopeIcon,
   LinkIcon,
   MapPinIcon,
 } from '@heroicons/react/20/solid';
@@ -17,8 +18,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import previewImage from '@/public/images/default-fallback-image.png';
-import EventsList from '@/components/events-list';
-import EventActionButton from '@/components/event-action-button';
+import EventsList from '@/components/event/events-list';
+import EventActionButton from '@/components/event/event-action-button';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -29,7 +30,8 @@ export default async function Page({
 }) {
   const { id } = await params;
 
-  const event: EventData = await getEventById(id);
+  const data = await getEventById(id);
+  const event = data.event;
 
   const organiser = event.user_info;
 
@@ -65,21 +67,22 @@ export default async function Page({
                 <p className='flex items-center gap-2'>
                   <ClockIcon className='size-5 text-secondary/80' />
                   <span className=''>Starts:</span>{' '}
-                  <span>
-                    {formatDateTime(new Date(event.start_time)).dateTime}
-                  </span>
+                  <span>{formatDateTime(event.start_time).dateTime}</span>
                 </p>
                 <p className='flex items-center gap-2'>
                   <CalendarDateRangeIcon className='size-5 text-secondary/80' />
                   <span className=''>Ends:</span>{' '}
-                  <span>
-                    {formatDateTime(new Date(event.end_time)).dateTime}
-                  </span>
+                  <span>{formatDateTime(event.end_time).dateTime}</span>
+                </p>
+                <p className=' whitespace-nowrap flex items-center gap-2'>
+                  <EnvelopeIcon className='size-5 text-secondary/80' />{' '}
+                  {event.user_info.email}
                 </p>
                 <p className=' whitespace-nowrap flex items-center gap-2'>
                   <MapPinIcon className='size-5 text-secondary/80' />
                   {event.location}
                 </p>
+
                 {event.url && (
                   <p className=' whitespace-nowrap flex items-center gap-2'>
                     <LinkIcon className='size-5 text-secondary/80' />

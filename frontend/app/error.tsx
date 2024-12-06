@@ -12,16 +12,16 @@ export default function Error() {
   const router = useRouter();
 
   return (
-    <div className='container text-center py-20 space-y-1'>
-      <h3
-        className='text-lg font-medium
+    <div className='container text-center py-20 space-y-3'>
+      <div>
+        <h3
+          className='text-lg font-medium
       '
-      >
-        Something went wrong ☹️
-      </h3>
-      <p className='text'>
-        Something went wrong on the server. Please try again later.
-      </p>
+        >
+          Something went wrong ☹️
+        </h3>
+        <p className='text'>An error occured. Please try again.</p>
+      </div>
 
       <Button
         type='button'

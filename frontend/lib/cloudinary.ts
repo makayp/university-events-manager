@@ -7,7 +7,7 @@ try {
     api_secret: process.env.CLOUDINARY_API_SECRET,
   });
 } catch (error) {
-  console.log('failed to launch cloudinary', error);
+  // console.log('failed to launch cloudinary', error);
 }
 
 export async function uploadImage({

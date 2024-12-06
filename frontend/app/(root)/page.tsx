@@ -1,4 +1,4 @@
-import EventsList from '@/components/events-list';
+import EventsList from '@/components/event/events-list';
 import { Button } from '@/components/ui/button';
 import heroImage from '@/public/images/hero-image.jpg';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
