@@ -147,12 +147,14 @@ export default function EventDropdown({
         isOpen={isShareDialogOpen}
         setIsOpen={setShareDialogOpen}
       />
-      <ParticipantsDialog
-        isOnDashboard
-        eventId={eventId}
-        isOpen={isParticipantsDialogOpen}
-        setIsOpen={setIsParticipantsDialogOpen}
-      />
+      {isEventOrganiser && (
+        <ParticipantsDialog
+          isOnDashboard
+          eventId={eventId}
+          isOpen={isParticipantsDialogOpen}
+          setIsOpen={setIsParticipantsDialogOpen}
+        />
+      )}
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild className='block focus:outline-none'>

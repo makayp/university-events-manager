@@ -18,7 +18,6 @@ import { getEventById } from './event-data';
 export async function signup(userData: z.infer<typeof SignUpSchema>) {
   let isAccountCreated = false;
   let credentials = null;
-  let data;
   try {
     const res = await fetch(`${process.env.SERVER_ENDPOINT}/auth/register`, {
       method: 'POST',
@@ -31,8 +30,6 @@ export async function signup(userData: z.infer<typeof SignUpSchema>) {
         'Content-Type': 'application/json',
       },
     });
-
-    // data = await res.json();
 
     if (res.status == 409) {
       return { error: 'Email already exists' };
@@ -219,9 +216,7 @@ export async function deleteEvent(eventId: string) {
     );
 
     if (!res.ok) {
-      // console.log(eventId, session);
-
-      // console.log(await res.json());
+      console.log(await res.json());
       return { error: 'Something went wrong. Try again' };
     }
 
@@ -250,8 +245,6 @@ export async function registerForEvent({ eventId }: { eventId: string }) {
         },
       }
     );
-
-    // const data = await res.json();
 
     if (res.status == 409) {
       return { error: 'You already registered for this event' };
@@ -286,10 +279,6 @@ export async function unregisterEvent({ eventId }: { eventId: string }) {
         },
       }
     );
-
-    // const data = await res.json();
-
-    // console.log(res.status, data);
 
     if (res.status == 404) {
       return { error: 'You are not registered for this event' };
