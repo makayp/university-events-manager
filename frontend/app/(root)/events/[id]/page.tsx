@@ -2,7 +2,6 @@ import EventDropdown from '@/components/event/event-dropdown';
 import { Button } from '@/components/ui/button';
 import { getEventById } from '@/lib/event-data';
 
-import { Event } from '@/lib/declaration';
 import { formatDateTime, normalizeUrl } from '@/lib/utils';
 import {
   ArrowRightIcon,

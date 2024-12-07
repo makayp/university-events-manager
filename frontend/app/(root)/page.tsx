@@ -58,10 +58,10 @@ export default async function Home() {
           </div>
           <div>
             <div className='hidden md:block'>
-              <EventsList type='collection' numEvents={6} />
+              <EventsList type='collection' numEvents={12} />
             </div>
             <div className='md:hidden'>
-              <EventsList type='slider' numEvents={8} />
+              <EventsList type='slider' numEvents={12} />
             </div>
           </div>
         </div>

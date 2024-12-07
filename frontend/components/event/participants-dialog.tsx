@@ -14,7 +14,7 @@ import UserAvatar from '../shared/user-avatar';
 import { Users } from 'lucide-react';
 import clsx from 'clsx';
 import { DBUser } from '@/lib/declaration';
-import { useEffect, useState, useTransition } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Spinner from '../shared/spinner';
 import { getParticipants } from '@/lib/action';
 import { Skeleton } from '../ui/skeleton';
@@ -34,21 +34,34 @@ export function ParticipantsDialog({
 }) {
   const [participants, setParticipants] = useState<DBUser[]>([]);
 
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState<boolean>(false);
 
   const sortedUsers = participants
     .slice()
     .sort((a, b) => a.first_name.localeCompare(b.first_name));
 
-  useEffect(() => {
-    startTransition(async () => {
+  const onLoad = useCallback(
+    async function onLoad() {
+      setIsPending(true);
       const participants = await getParticipants(eventId);
       setParticipants(participants);
-    });
-  }, [eventId]);
+      setIsPending(false);
+    },
+    [eventId]
+  );
+
+  useEffect(() => {
+    if (isOpen) onLoad();
+  }, [isOpen, onLoad]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(isOpen) => {
+        setIsOpen?.(isOpen);
+        if (isOpen) onLoad();
+      }}
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className='sm:max-w-[425px] max-h-[80%] flex flex-col'>
         <DialogHeader>
